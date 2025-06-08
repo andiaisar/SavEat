@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SavEat</string>
+    <string-array name="satuan_array">
+        <item>kg</item>
+        <item>gram</item>
+        <item>liter</item>
+        <item>ml</item>
+        <item>butir</item>
+        <item>buah</item>
+        <item>bungkus</item>
+        <item>sachet</item>
+    </string-array>
+</resources>
