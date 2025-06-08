@@ -17,7 +17,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Header Section dengan efek glassmorphism -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,6 +49,7 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardNotification"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_alignParentEnd="true"
@@ -70,8 +70,11 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/cardProfile"
-                        android:layout_marginTop="16dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/cardProfile"
+                        android:layout_toStartOf="@id/cardNotification"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -79,7 +82,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Hello, Franz Hermani!"
-                            android:textSize="24sp"
+                            android:textSize="22sp"
                             android:textStyle="bold"
                             android:textColor="#1A1A1A"
                             android:layout_marginBottom="4dp"/>
@@ -88,14 +91,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Ini ringkasan bahanmu &amp; resep seru hari ini ✨"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textColor="#666666"
                             android:lineSpacingExtra="2dp"/>
                     </LinearLayout>
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Featured Card dengan animasi gradient -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardRingkasanBahan"
                 android:layout_width="match_parent"
@@ -159,6 +161,7 @@
                             app:cardBackgroundColor="#FFFFFF">
 
                             <LinearLayout
+                                android:id="@+id/tvLihatDetail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
@@ -167,7 +170,6 @@
                                 android:paddingVertical="8dp">
 
                                 <TextView
-                                    android:id="@+id/tvLihatDetail"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Lihat detail"
@@ -204,7 +206,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Section Title dengan icon -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -221,38 +222,39 @@
                     android:textStyle="bold"
                     android:textColor="#1A1A1A"/>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#FFF3E0">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:cardCornerRadius="12dp"-->
+<!--                    app:cardElevation="2dp"-->
+<!--                    app:cardBackgroundColor="#FFF3E0">-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Lihat Semua"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="#FF9800"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp"/>
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Lihat Semua"-->
+<!--                        android:textSize="12sp"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:textColor="#FF9800"-->
+<!--                        android:paddingHorizontal="12dp"-->
+<!--                        android:paddingVertical="6dp"/>-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
             </LinearLayout>
 
-            <!-- Popular Recipes Section -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/loadingPlaceholder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="4dp"
-                    app:cardBackgroundColor="#F8F9FA">
+                    app:cardBackgroundColor="#F8F9FA"
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -266,8 +268,7 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_marginBottom="8dp"
-                            android:indeterminateTint="#4CAF50"
-                            android:visibility="gone" />
+                            android:indeterminateTint="#4CAF50"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -279,14 +280,13 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Vertical Recipe Grid -->
                 <LinearLayout
                     android:id="@+id/hsvPopularRecipes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                    <!-- Row 1: 2 cards side by side -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -310,7 +310,6 @@
                         </FrameLayout>
                     </LinearLayout>
 
-                    <!-- Row 2: 2 cards side by side -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -334,7 +333,6 @@
                         </FrameLayout>
                     </LinearLayout>
 
-                    <!-- Row 3: 2 cards side by side -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -356,93 +354,8 @@
                             <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe6"/>
                         </FrameLayout>
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/popularRecipeContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-                        <!-- Container ini tetap ada untuk kompatibilitas dengan kode Java -->
-                    </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
-
-            <!-- Quick Stats Cards -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="32dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="#E8F5E8">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🥘"
-                            android:textSize="20sp"
-                            android:layout_marginBottom="4dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Resep Favorit"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:textColor="#4CAF50"
-                            android:textAlignment="center"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="#FFF3E0">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="⭐"
-                            android:textSize="20sp"
-                            android:layout_marginBottom="4dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rating Tinggi"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:textColor="#FF9800"
-                            android:textAlignment="center"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

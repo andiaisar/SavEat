@@ -8,8 +8,8 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -40,11 +40,11 @@ public class HomeFragment extends Fragment {
     // Views
     private TextView tvNamaUser;
     private MaterialCardView cardRingkasanBahan;
-    private TextView tvLihatDetail;
+    private LinearLayout tvLihatDetail; // Diubah ke LinearLayout agar sesuai dengan ID baru
 
     // ===== AWAL PERUBAHAN =====
-    private ProgressBar pbPopularRecipes;
-    private HorizontalScrollView hsvPopularRecipes;
+    private MaterialCardView loadingPlaceholder; // Wadah untuk progress bar dan teks
+    private LinearLayout hsvPopularRecipes;
     // ===== AKHIR PERUBAHAN =====
 
     // Recipe cards
@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment {
         if (tvLihatDetail != null) tvLihatDetail.setOnClickListener(ringkasanListener);
 
         // ===== AWAL PERUBAHAN =====
-        pbPopularRecipes = view.findViewById(R.id.pbPopularRecipes);
+        loadingPlaceholder = view.findViewById(R.id.loadingPlaceholder);
         hsvPopularRecipes = view.findViewById(R.id.hsvPopularRecipes);
         // ===== AKHIR PERUBAHAN =====
 
@@ -123,22 +123,19 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadPopularRecipes() {
-        // ===== AWAL PERUBAHAN =====
-        // Tampilkan ProgressBar dan sembunyikan daftar resep
-        pbPopularRecipes.setVisibility(View.VISIBLE);
+        // PERBAIKAN: Tampilkan placeholder loading dan sembunyikan daftar resep
+        loadingPlaceholder.setVisibility(View.VISIBLE);
         hsvPopularRecipes.setVisibility(View.GONE);
-        // ===== AKHIR PERUBAHAN =====
 
         setAllCardPlaceholders();
 
         ApiService apiService = RetrofitClient.getMealApiService();
         if (apiService == null) {
-            pbPopularRecipes.setVisibility(View.GONE);
-            hsvPopularRecipes.setVisibility(View.VISIBLE);
+            // PERBAIKAN: Sembunyikan placeholder jika API service tidak tersedia
+            loadingPlaceholder.setVisibility(View.GONE);
             return;
         }
 
-        // Gunakan AtomicInteger untuk menghitung request yang selesai secara thread-safe
         final int totalRequests = 6;
         AtomicInteger requestsCompleted = new AtomicInteger(0);
 
@@ -179,11 +176,10 @@ public class HomeFragment extends Fragment {
                 }
 
                 private void checkIfAllRequestsDone() {
-                    // Cek apakah semua request telah selesai
                     if (requestsCompleted.incrementAndGet() == totalRequests) {
-                        // Jalankan di UI thread untuk menyembunyikan ProgressBar
+                        // PERBAIKAN: Jalankan di UI thread untuk menyembunyikan placeholder dan menampilkan resep
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            pbPopularRecipes.setVisibility(View.GONE);
+                            loadingPlaceholder.setVisibility(View.GONE);
                             hsvPopularRecipes.setVisibility(View.VISIBLE);
                         });
                     }
