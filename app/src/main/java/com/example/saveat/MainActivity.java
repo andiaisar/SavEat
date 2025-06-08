@@ -3,7 +3,6 @@ package com.example.saveat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout menuHome, menuIngredients, menuRecipe, menuProfile;
     private MaterialCardView circleHome, circleIngredients, circleRecipe, circleProfile;
     private ImageView iconHome, iconIngredients, iconRecipe, iconProfile;
-    private  StockFragment stockFragment; // For Ingredients
+    private StockFragment stockFragment; // For Ingredients
     private HomeFragment homeFragment;
     private ProfileFragment profileFragment;
     private ChatActivity chatFragment; // For AI Chat
@@ -74,8 +73,7 @@ public class MainActivity extends AppCompatActivity {
             case "ingredients":
                 circleIngredients.setVisibility(View.VISIBLE);
                 iconIngredients.setVisibility(View.GONE);
-                startActivity(new Intent(this, StockActivity.class));
-                // No finish(); keep MainActivity alive for navigation back
+                loadStockFragment(); // <-- Perubahan di sini
                 break;
 
             case "recipe":
@@ -110,6 +108,14 @@ public class MainActivity extends AppCompatActivity {
             homeFragment = new HomeFragment();
         }
         loadFragment(homeFragment);
+    }
+
+    // <-- Tambahkan metode ini
+    private void loadStockFragment() {
+        if (stockFragment == null) {
+            stockFragment = new StockFragment();
+        }
+        loadFragment(stockFragment);
     }
 
     private void loadChatFragment() {
