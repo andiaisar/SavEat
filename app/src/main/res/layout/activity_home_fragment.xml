@@ -17,13 +17,11 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Header Section -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp">
 
-                <!-- Profile Avatar -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardProfile"
                     android:layout_width="48dp"
@@ -40,7 +38,6 @@
                         android:scaleType="centerCrop"/>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Notification Icon -->
                 <ImageView
                     android:id="@+id/ivNotification"
                     android:layout_width="24dp"
@@ -52,7 +49,6 @@
                     android:padding="4dp"/>
             </RelativeLayout>
 
-            <!-- Welcome Text -->
             <TextView
                 android:id="@+id/tvNamaUser"
                 android:layout_width="wrap_content"
@@ -79,7 +75,6 @@
                 android:text="bahanmu &amp; resep seru hari ini"
                 android:layout_marginBottom="24dp"/>
 
-            <!-- Search Bar -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -115,7 +110,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Ringkasan Bahan Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardRingkasanBahan"
                 android:layout_width="match_parent"
@@ -183,7 +177,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Resep Popular Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -193,59 +186,40 @@
                 android:textColor="#1A1A1A"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Horizontal Scroll View for Recipe Cards -->
-            <HorizontalScrollView
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:scrollbars="none">
+                android:layout_marginBottom="32dp">
 
-                <LinearLayout
-                    android:id="@+id/popularRecipeContainer"
+                <ProgressBar
+                    android:id="@+id/pbPopularRecipes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
 
-                    <!-- First Recipe Card -->
-                    <include layout="@layout/item_card_recipe"
-                        android:id="@+id/cardRecipe1"
-                        tools:id="@+id/cardRecipe1"
-                        tools:text="Loading Recipe..." />
+                <HorizontalScrollView
+                    android:id="@+id/hsvPopularRecipes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
 
-                    <!-- Second Recipe Card -->
-                    <include layout="@layout/item_card_recipe"
-                        android:id="@+id/cardRecipe2"
-                        tools:id="@+id/cardRecipe2"
-                        tools:text="Loading Recipe..." />
+                    <LinearLayout
+                        android:id="@+id/popularRecipeContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                    <!-- Third Recipe Card -->
-                    <include layout="@layout/item_card_recipe"
-                        android:id="@+id/cardRecipe3"
-                        tools:id="@+id/cardRecipe3"
-                        tools:text="Loading Recipe..." />
+                        <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe1"/>
+                        <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe2"/>
+                        <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe3"/>
+                        <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe4"/>
+                        <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe5"/>
+                        <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe6"/>
 
-                    <!-- Fourth Recipe Card -->
-                    <include layout="@layout/item_card_recipe"
-                        android:id="@+id/cardRecipe4"
-                        tools:id="@+id/cardRecipe4"
-                        tools:text="Loading Recipe..." />
-
-                    <!-- Fifth Recipe Card -->
-                    <include layout="@layout/item_card_recipe"
-                        android:id="@+id/cardRecipe5"
-                        tools:id="@+id/cardRecipe5"
-                        tools:text="Loading Recipe..." />
-
-                    <!-- Sixth Recipe Card -->
-                    <include layout="@layout/item_card_recipe"
-                        android:id="@+id/cardRecipe6"
-                        tools:id="@+id/cardRecipe6"
-                        tools:text="Loading Recipe..." />
-
-                </LinearLayout>
-            </HorizontalScrollView>
-
-            <!-- Add bottom margin so content doesn't hide under nav -->
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </RelativeLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="80dp"/>

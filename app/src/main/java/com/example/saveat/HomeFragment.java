@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +26,7 @@ import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,10 +42,15 @@ public class HomeFragment extends Fragment {
     private MaterialCardView cardRingkasanBahan;
     private TextView tvLihatDetail;
 
+    // ===== AWAL PERUBAHAN =====
+    private ProgressBar pbPopularRecipes;
+    private HorizontalScrollView hsvPopularRecipes;
+    // ===== AKHIR PERUBAHAN =====
+
     // Recipe cards
     private MaterialCardView cardRecipe1, cardRecipe2, cardRecipe3, cardRecipe4, cardRecipe5, cardRecipe6;
     private TextView tvRecipe1Title, tvRecipe2Title, tvRecipe3Title, tvRecipe4Title, tvRecipe5Title, tvRecipe6Title;
-    private ImageView ivRendang, ivCoto, ivRecipe3, ivRecipe4, ivRecipe5, ivRecipe6;
+    private ImageView ivRecipe1, ivRecipe2, ivRecipe3, ivRecipe4, ivRecipe5, ivRecipe6;
 
     @Nullable
     @Override
@@ -51,7 +60,8 @@ public class HomeFragment extends Fragment {
         dbHelper = new DatabaseHelper(getActivity());
         initViews(view);
 
-        new Handler().postDelayed(this::loadPopularRecipes, 500);
+        // Langsung panggil loadPopularRecipes
+        loadPopularRecipes();
 
         return view;
     }
@@ -72,6 +82,11 @@ public class HomeFragment extends Fragment {
         if (cardRingkasanBahan != null) cardRingkasanBahan.setOnClickListener(ringkasanListener);
         if (tvLihatDetail != null) tvLihatDetail.setOnClickListener(ringkasanListener);
 
+        // ===== AWAL PERUBAHAN =====
+        pbPopularRecipes = view.findViewById(R.id.pbPopularRecipes);
+        hsvPopularRecipes = view.findViewById(R.id.hsvPopularRecipes);
+        // ===== AKHIR PERUBAHAN =====
+
         // Find recipe card containers
         cardRecipe1 = view.findViewById(R.id.cardRecipe1);
         cardRecipe2 = view.findViewById(R.id.cardRecipe2);
@@ -80,42 +95,68 @@ public class HomeFragment extends Fragment {
         cardRecipe5 = view.findViewById(R.id.cardRecipe5);
         cardRecipe6 = view.findViewById(R.id.cardRecipe6);
 
-        // Find ImageViews inside each card
-//        if (cardRecipe1 != null) ivRendang = cardRecipe1.findViewById(R.id.ivRecipeImage);
-//        if (cardRecipe2 != null) ivCoto = cardRecipe2.findViewById(R.id.ivRecipeImage);
-//        if (cardRecipe3 != null) ivRecipe3 = cardRecipe3.findViewById(R.id.ivRecipeImage);
-//        if (cardRecipe4 != null) ivRecipe4 = cardRecipe4.findViewById(R.id.ivRecipeImage);
-//        if (cardRecipe5 != null) ivRecipe5 = cardRecipe5.findViewById(R.id.ivRecipeImage);
-//        if (cardRecipe6 != null) ivRecipe6 = cardRecipe6.findViewById(R.id.ivRecipeImage);
-
-        // Find TextViews inside each card
-        if (cardRecipe1 != null) tvRecipe1Title = cardRecipe1.findViewById(R.id.tvRecipeTitle);
-        if (cardRecipe2 != null) tvRecipe2Title = cardRecipe2.findViewById(R.id.tvRecipeTitle);
-        if (cardRecipe3 != null) tvRecipe3Title = cardRecipe3.findViewById(R.id.tvRecipeTitle);
-        if (cardRecipe4 != null) tvRecipe4Title = cardRecipe4.findViewById(R.id.tvRecipeTitle);
-        if (cardRecipe5 != null) tvRecipe5Title = cardRecipe5.findViewById(R.id.tvRecipeTitle);
-        if (cardRecipe6 != null) tvRecipe6Title = cardRecipe6.findViewById(R.id.tvRecipeTitle);
+        // Find ImageViews and TextViews inside each card
+        if (cardRecipe1 != null) {
+            ivRecipe1 = cardRecipe1.findViewById(R.id.ivRecipe);
+            tvRecipe1Title = cardRecipe1.findViewById(R.id.tvRecipeTitle);
+        }
+        if (cardRecipe2 != null) {
+            ivRecipe2 = cardRecipe2.findViewById(R.id.ivRecipe);
+            tvRecipe2Title = cardRecipe2.findViewById(R.id.tvRecipeTitle);
+        }
+        if (cardRecipe3 != null) {
+            ivRecipe3 = cardRecipe3.findViewById(R.id.ivRecipe);
+            tvRecipe3Title = cardRecipe3.findViewById(R.id.tvRecipeTitle);
+        }
+        if (cardRecipe4 != null) {
+            ivRecipe4 = cardRecipe4.findViewById(R.id.ivRecipe);
+            tvRecipe4Title = cardRecipe4.findViewById(R.id.tvRecipeTitle);
+        }
+        if (cardRecipe5 != null) {
+            ivRecipe5 = cardRecipe5.findViewById(R.id.ivRecipe);
+            tvRecipe5Title = cardRecipe5.findViewById(R.id.tvRecipeTitle);
+        }
+        if (cardRecipe6 != null) {
+            ivRecipe6 = cardRecipe6.findViewById(R.id.ivRecipe);
+            tvRecipe6Title = cardRecipe6.findViewById(R.id.tvRecipeTitle);
+        }
     }
 
     private void loadPopularRecipes() {
+        // ===== AWAL PERUBAHAN =====
+        // Tampilkan ProgressBar dan sembunyikan daftar resep
+        pbPopularRecipes.setVisibility(View.VISIBLE);
+        hsvPopularRecipes.setVisibility(View.GONE);
+        // ===== AKHIR PERUBAHAN =====
+
         setAllCardPlaceholders();
 
         ApiService apiService = RetrofitClient.getMealApiService();
-        if (apiService == null) return;
+        if (apiService == null) {
+            pbPopularRecipes.setVisibility(View.GONE);
+            hsvPopularRecipes.setVisibility(View.VISIBLE);
+            return;
+        }
 
-        for (int i = 0; i < 6; i++) {
+        // Gunakan AtomicInteger untuk menghitung request yang selesai secara thread-safe
+        final int totalRequests = 6;
+        AtomicInteger requestsCompleted = new AtomicInteger(0);
+
+        for (int i = 0; i < totalRequests; i++) {
             final int position = i + 1;
             Call<MealResponse> call = apiService.getRandomMeal();
 
-            call.enqueue(new Callback<MealResponse>() {
+            Callback<MealResponse> callback = new Callback<MealResponse>() {
                 @Override
                 public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
+                    if (isAdded() && response.isSuccessful() && response.body() != null) {
                         List<MealResponse.Meal> meals = response.body().getMeals();
                         if (meals != null && !meals.isEmpty()) {
                             MealResponse.Meal meal = meals.get(0);
                             if (meal != null) {
-                                popularRecipesList.add(meal);
+                                if(popularRecipesList.size() < totalRequests) {
+                                    popularRecipesList.add(meal);
+                                }
                                 updateRecipeCards(meal, position);
                             } else {
                                 handleRecipeLoadError(position);
@@ -126,12 +167,30 @@ public class HomeFragment extends Fragment {
                     } else {
                         handleRecipeLoadError(position);
                     }
+                    checkIfAllRequestsDone();
                 }
+
                 @Override
                 public void onFailure(Call<MealResponse> call, Throwable t) {
-                    handleRecipeLoadError(position);
+                    if (isAdded()) {
+                        handleRecipeLoadError(position);
+                    }
+                    checkIfAllRequestsDone();
                 }
-            });
+
+                private void checkIfAllRequestsDone() {
+                    // Cek apakah semua request telah selesai
+                    if (requestsCompleted.incrementAndGet() == totalRequests) {
+                        // Jalankan di UI thread untuk menyembunyikan ProgressBar
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            pbPopularRecipes.setVisibility(View.GONE);
+                            hsvPopularRecipes.setVisibility(View.VISIBLE);
+                        });
+                    }
+                }
+            };
+
+            call.enqueue(callback);
         }
     }
 
@@ -147,7 +206,7 @@ public class HomeFragment extends Fragment {
     private void handleRecipeLoadError(int position) {
         TextView titleView = getRecipeTitleView(position);
         if (titleView != null) {
-            titleView.setText("Resep Populer");
+            titleView.setText("Gagal Memuat");
         }
     }
 
@@ -165,8 +224,8 @@ public class HomeFragment extends Fragment {
 
     private ImageView getRecipeImageView(int position) {
         switch (position) {
-            case 1: return ivRendang;
-            case 2: return ivCoto;
+            case 1: return ivRecipe1;
+            case 2: return ivRecipe2;
             case 3: return ivRecipe3;
             case 4: return ivRecipe4;
             case 5: return ivRecipe5;
@@ -200,7 +259,7 @@ public class HomeFragment extends Fragment {
             cardView.setOnClickListener(v -> navigateToRecipeDetail(meal));
         }
 
-        if (imageView != null && meal.getStrMealThumb() != null) {
+        if (imageView != null && meal.getStrMealThumb() != null && isAdded()) {
             Glide.with(this)
                     .load(meal.getStrMealThumb())
                     .placeholder(R.drawable.ic_placeholder)
