@@ -55,8 +55,6 @@ public class StockActivity extends AppCompatActivity {
         tvMeat = findViewById(R.id.tvMeat);
         tvDrink = findViewById(R.id.tvDrink);
 
-        // Set up bottom navigation
-        setupBottomNavigation();
 
         // Set up floating action button
         FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
@@ -124,84 +122,84 @@ public class StockActivity extends AppCompatActivity {
         updateMenuSelection(menuAll, tvAll);
     }
 
-    private void setupBottomNavigation() {
-        LinearLayout menuHome = findViewById(R.id.menuHome);
-        LinearLayout menuIngredients = findViewById(R.id.menuIngredients);
-        LinearLayout menuRecipe = findViewById(R.id.menuRecipe);
-        LinearLayout menuProfile = findViewById(R.id.menuProfile);
-
-        MaterialCardView circleHome = findViewById(R.id.circleHome);
-        MaterialCardView circleIngredients = findViewById(R.id.circleIngredients);
-        MaterialCardView circleRecipe = findViewById(R.id.circleRecipe);
-        MaterialCardView circleProfile = findViewById(R.id.circleProfile);
-
-        ImageView iconHome = findViewById(R.id.iconHome);
-        ImageView iconIngredients = findViewById(R.id.iconIngredients);
-        ImageView iconRecipe = findViewById(R.id.iconRecipe);
-        ImageView iconProfile = findViewById(R.id.iconProfile);
-
-        // Set ingredients tab as active
-        circleHome.setVisibility(View.GONE);
-        iconHome.setVisibility(View.VISIBLE);
-
-        circleIngredients.setVisibility(View.VISIBLE);
-        iconIngredients.setVisibility(View.GONE);
-
-        circleRecipe.setVisibility(View.GONE);
-        iconRecipe.setVisibility(View.VISIBLE);
-
-        circleProfile.setVisibility(View.GONE);
-        iconProfile.setVisibility(View.VISIBLE);
-
-        // Set navigation listeners
-        menuHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, HomeFragment.class));
-            finish();
-        });
-
-        // Add click listener for Recipe/AI menu item
-        menuRecipe.setOnClickListener(v -> {
-            // Update visual indicators
-            circleHome.setVisibility(View.GONE);
-            iconHome.setVisibility(View.VISIBLE);
-
-            circleIngredients.setVisibility(View.GONE);
-            iconIngredients.setVisibility(View.VISIBLE);
-
-            circleRecipe.setVisibility(View.VISIBLE);
-            iconRecipe.setVisibility(View.GONE);
-
-            circleProfile.setVisibility(View.GONE);
-            iconProfile.setVisibility(View.VISIBLE);
-
-            // Navigate to ChatActivity
-            Intent intent = new Intent(StockActivity.this, ChatActivity.class);
-            startActivity(intent);
-            finish(); // Optional: finish current activity if you don't want it in the back stack
-        });
-
-        // Add click listener for Profile menu item, if needed
-        menuProfile.setOnClickListener(v -> {
-            // Update visual indicators for profile
-            circleHome.setVisibility(View.GONE);
-            iconHome.setVisibility(View.VISIBLE);
-
-            circleIngredients.setVisibility(View.GONE);
-            iconIngredients.setVisibility(View.VISIBLE);
-
-            circleRecipe.setVisibility(View.GONE);
-            iconRecipe.setVisibility(View.VISIBLE);
-
-            circleProfile.setVisibility(View.VISIBLE);
-            iconProfile.setVisibility(View.GONE);
-
-            // TODO: Navigate to ProfileActivity when implemented
-            // Example:
-            // Intent intent = new Intent(StockActivity.this, ProfileActivity.class);
-            // startActivity(intent);
-            // finish();
-        });
-    }
+//    private void setupBottomNavigation() {
+//        LinearLayout menuHome = findViewById(R.id.menuHome);
+//        LinearLayout menuIngredients = findViewById(R.id.menuIngredients);
+//        LinearLayout menuRecipe = findViewById(R.id.menuRecipe);
+//        LinearLayout menuProfile = findViewById(R.id.menuProfile);
+//
+//        MaterialCardView circleHome = findViewById(R.id.circleHome);
+//        MaterialCardView circleIngredients = findViewById(R.id.circleIngredients);
+//        MaterialCardView circleRecipe = findViewById(R.id.circleRecipe);
+//        MaterialCardView circleProfile = findViewById(R.id.circleProfile);
+//
+//        ImageView iconHome = findViewById(R.id.iconHome);
+//        ImageView iconIngredients = findViewById(R.id.iconIngredients);
+//        ImageView iconRecipe = findViewById(R.id.iconRecipe);
+//        ImageView iconProfile = findViewById(R.id.iconProfile);
+//
+//        // Set ingredients tab as active
+//        circleHome.setVisibility(View.GONE);
+//        iconHome.setVisibility(View.VISIBLE);
+//
+//        circleIngredients.setVisibility(View.VISIBLE);
+//        iconIngredients.setVisibility(View.GONE);
+//
+//        circleRecipe.setVisibility(View.GONE);
+//        iconRecipe.setVisibility(View.VISIBLE);
+//
+//        circleProfile.setVisibility(View.GONE);
+//        iconProfile.setVisibility(View.VISIBLE);
+//
+//        // Set navigation listeners
+//        menuHome.setOnClickListener(v -> {
+//            startActivity(new Intent(this, HomeFragment.class));
+//            finish();
+//        });
+//
+//        // Add click listener for Recipe/AI menu item
+//        menuRecipe.setOnClickListener(v -> {
+//            // Update visual indicators
+//            circleHome.setVisibility(View.GONE);
+//            iconHome.setVisibility(View.VISIBLE);
+//
+//            circleIngredients.setVisibility(View.GONE);
+//            iconIngredients.setVisibility(View.VISIBLE);
+//
+//            circleRecipe.setVisibility(View.VISIBLE);
+//            iconRecipe.setVisibility(View.GONE);
+//
+//            circleProfile.setVisibility(View.GONE);
+//            iconProfile.setVisibility(View.VISIBLE);
+//
+//            // Navigate to ChatActivity
+//            Intent intent = new Intent(StockActivity.this, ChatActivity.class);
+//            startActivity(intent);
+//            finish(); // Optional: finish current activity if you don't want it in the back stack
+//        });
+//
+//        // Add click listener for Profile menu item, if needed
+//        menuProfile.setOnClickListener(v -> {
+//            // Update visual indicators for profile
+//            circleHome.setVisibility(View.GONE);
+//            iconHome.setVisibility(View.VISIBLE);
+//
+//            circleIngredients.setVisibility(View.GONE);
+//            iconIngredients.setVisibility(View.VISIBLE);
+//
+//            circleRecipe.setVisibility(View.GONE);
+//            iconRecipe.setVisibility(View.VISIBLE);
+//
+//            circleProfile.setVisibility(View.VISIBLE);
+//            iconProfile.setVisibility(View.GONE);
+//
+//            // TODO: Navigate to ProfileActivity when implemented
+//            // Example:
+//            // Intent intent = new Intent(StockActivity.this, ProfileActivity.class);
+//            // startActivity(intent);
+//            // finish();
+//        });
+//    }
 
     private void loadIngredients() {
         // Replace with actual resource IDs that exist in your project
