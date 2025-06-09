@@ -14,8 +14,9 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "saveat.db";
-    private static final int DATABASE_VERSION = 2; // Incremented version
+    private static final int DATABASE_VERSION = 3;
 
+    // ... (Definisi nama tabel dan kolom tetap sama)
     private static final String TABEL_USERS = "users";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_USERNAME = "username";
@@ -29,7 +30,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SATUAN = "satuan";
     private static final String COLUMN_KADALUARSA = "kadaluarsa";
     private static final String COLUMN_USER_ID = "user_id";
-    private static final String COLUMN_IMAGE_PATH = "image_path"; // Added this line
+    private static final String COLUMN_IMAGE_PATH = "image_path";
+    private static final String COLUMN_CATEGORY = "category";
 
     private static final String CREATE_TABLE_USERS =
             "CREATE TABLE " + TABEL_USERS + " (" +
@@ -45,11 +47,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_NAMA_BAHAN + " TEXT NOT NULL," +
                     COLUMN_JUMLAH + " INTEGER NOT NULL," +
                     COLUMN_SATUAN + " TEXT NOT NULL," +
-                    COLUMN_KADALUARSA + " INTEGER NOT NULL," + // timestamp
+                    COLUMN_KADALUARSA + " INTEGER NOT NULL," +
                     COLUMN_USER_ID + " INTEGER NOT NULL," +
-                    COLUMN_IMAGE_PATH + " TEXT," + // Added this line
+                    COLUMN_IMAGE_PATH + " TEXT," +
+                    COLUMN_CATEGORY + " TEXT," +
                     "FOREIGN KEY(" + COLUMN_USER_ID + ") REFERENCES " + TABEL_USERS + "(" + COLUMN_ID + ")" +
                     ")";
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -65,10 +69,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
             db.execSQL("ALTER TABLE " + TABEL_BAHAN + " ADD COLUMN " + COLUMN_IMAGE_PATH + " TEXT;");
-        } else {
-            db.execSQL("DROP TABLE IF EXISTS " + TABEL_USERS);
-            db.execSQL("DROP TABLE IF EXISTS " + TABEL_BAHAN);
-            onCreate(db);
+        }
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE " + TABEL_BAHAN + " ADD COLUMN " + COLUMN_CATEGORY + " TEXT;");
         }
     }
 
@@ -80,7 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_EMAIL, email);
 
         long id = db.insert(TABEL_USERS, null, values);
-        db.close();
+        // HAPUS: db.close();
         return id;
     }
 
@@ -89,7 +92,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABEL_USERS, null, COLUMN_EMAIL + "=?", new String[]{email}, null, null, null);
         boolean exists = (cursor.getCount() > 0);
         cursor.close();
-        db.close();
+        // HAPUS: db.close();
         return exists;
     }
 
@@ -99,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, new String[]{email, password});
         boolean exists = cursor.getCount() > 0;
         cursor.close();
-        db.close();
+        // HAPUS: db.close();
         return exists;
     }
 
@@ -112,11 +115,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME));
         }
         cursor.close();
-        db.close();
+        // HAPUS: db.close();
         return name;
     }
 
-    public long tambahBahan(String nama, int jumlah, String satuan, long kadaluarsaTimestamp, long userId, String imagePath) {
+    public long tambahBahan(String nama, int jumlah, String satuan, long kadaluarsaTimestamp, long userId, String imagePath, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAMA_BAHAN, nama);
@@ -124,10 +127,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SATUAN, satuan);
         values.put(COLUMN_KADALUARSA, kadaluarsaTimestamp);
         values.put(COLUMN_USER_ID, userId);
-        values.put(COLUMN_IMAGE_PATH, imagePath); // Added this line
+        values.put(COLUMN_IMAGE_PATH, imagePath);
+        values.put(COLUMN_CATEGORY, category);
 
         long id = db.insert(TABEL_BAHAN, null, values);
-        db.close();
+        // HAPUS: db.close();
         return id;
     }
 
@@ -148,15 +152,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int jumlah = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_JUMLAH));
                 String satuan = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SATUAN));
                 Date kadaluarsa = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_KADALUARSA)));
-                String imagePath = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH)); // Added this line
+                String imagePath = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH));
+                String category = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY));
 
-                BahanHariIni bahan = new BahanHariIni(id, nama, jumlah, satuan, kadaluarsa, imagePath); // Modified this line
+                BahanHariIni bahan = new BahanHariIni(id, nama, jumlah, satuan, kadaluarsa, imagePath, category);
                 bahanList.add(bahan);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
-        db.close();
+        // HAPUS: db.close();
         return bahanList;
     }
 
@@ -164,23 +169,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         int rowsAffected = db.delete(TABEL_BAHAN, COLUMN_BAHAN_ID + " = ?",
                 new String[]{String.valueOf(bahanId)});
-        db.close();
+        // HAPUS: db.close();
         return rowsAffected > 0;
     }
 
-    public boolean updateBahan(long bahanId, String nama, int jumlah, String satuan, long kadaluarsa, String imagePath) {
+    public boolean updateBahan(long bahanId, String nama, int jumlah, String satuan, long kadaluarsa, String imagePath, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAMA_BAHAN, nama);
         values.put(COLUMN_JUMLAH, jumlah);
         values.put(COLUMN_SATUAN, satuan);
         values.put(COLUMN_KADALUARSA, kadaluarsa);
-        values.put(COLUMN_IMAGE_PATH, imagePath); // Added this line
+        values.put(COLUMN_IMAGE_PATH, imagePath);
+        values.put(COLUMN_CATEGORY, category);
 
         int rowsAffected = db.update(TABEL_BAHAN, values,
                 COLUMN_BAHAN_ID + " = ?",
                 new String[]{String.valueOf(bahanId)});
-        db.close();
+        // HAPUS: db.close();
         return rowsAffected > 0;
     }
 
@@ -192,18 +198,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)},
                 null, null, null);
 
+        BahanHariIni bahan = null;
         if (cursor != null && cursor.moveToFirst()) {
-            BahanHariIni bahan = new BahanHariIni(
+            bahan = new BahanHariIni(
                     cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_BAHAN_ID)),
                     cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAMA_BAHAN)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_JUMLAH)),
                     cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SATUAN)),
                     new Date(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_KADALUARSA))),
-                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH)) // Modified this line
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY))
             );
             cursor.close();
-            return bahan;
         }
-        return null;
+        // HAPUS: if (db != null) { db.close(); }
+        return bahan;
     }
 }

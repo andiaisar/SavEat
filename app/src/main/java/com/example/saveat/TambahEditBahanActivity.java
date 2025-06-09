@@ -6,10 +6,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -24,12 +22,11 @@ import com.example.saveat.model.BahanHariIni;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class TambahEditBahanActivity extends AppCompatActivity {
     private EditText etNama, etJumlah;
-    private Spinner spSatuan;
+    private Spinner spSatuan, spKategori;
     private Button btnPilihTanggal, btnSimpan, btnPilihGambar;
     private ImageView ivBahanImage;
     private Calendar calendar;
@@ -53,21 +50,26 @@ public class TambahEditBahanActivity extends AppCompatActivity {
         etNama = findViewById(R.id.et_nama_bahan);
         etJumlah = findViewById(R.id.et_jumlah);
         spSatuan = findViewById(R.id.sp_satuan);
+        spKategori = findViewById(R.id.sp_kategori);
         btnPilihTanggal = findViewById(R.id.btn_pilih_tanggal);
         btnSimpan = findViewById(R.id.btn_simpan);
         btnPilihGambar = findViewById(R.id.btn_pilih_gambar);
         ivBahanImage = findViewById(R.id.iv_bahan_image);
 
         // Setup spinner satuan
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter<CharSequence> satuanAdapter = ArrayAdapter.createFromResource(this,
                 R.array.satuan_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spSatuan.setAdapter(adapter);
+        satuanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spSatuan.setAdapter(satuanAdapter);
 
-        // Setup calendar
+        // Setup spinner kategori
+        ArrayAdapter<CharSequence> kategoriAdapter = ArrayAdapter.createFromResource(this,
+                R.array.kategori_array, android.R.layout.simple_spinner_item);
+        kategoriAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spKategori.setAdapter(kategoriAdapter);
+
         calendar = Calendar.getInstance();
 
-        // Jika mode edit, load data bahan
         if (mode.equals("edit")) {
             loadBahanData();
         }
@@ -99,19 +101,21 @@ public class TambahEditBahanActivity extends AppCompatActivity {
                     etNama.setText(bahan.getNama());
                     etJumlah.setText(String.valueOf(bahan.getJumlah()));
 
-                    // Set spinner satuan
-                    for (int i = 0; i < spSatuan.getCount(); i++) {
-                        if (spSatuan.getItemAtPosition(i).toString().equals(bahan.getSatuan())) {
-                            spSatuan.setSelection(i);
-                            break;
-                        }
+                    ArrayAdapter<CharSequence> satuanAdapter = (ArrayAdapter<CharSequence>) spSatuan.getAdapter();
+                    if (satuanAdapter != null) {
+                        int spinnerPosition = satuanAdapter.getPosition(bahan.getSatuan());
+                        spSatuan.setSelection(spinnerPosition);
                     }
 
-                    // Set tanggal
+                    ArrayAdapter<CharSequence> kategoriAdapter = (ArrayAdapter<CharSequence>) spKategori.getAdapter();
+                    if (kategoriAdapter != null) {
+                        int spinnerPosition = kategoriAdapter.getPosition(bahan.getCategory());
+                        spKategori.setSelection(spinnerPosition);
+                    }
+
                     calendar.setTime(bahan.getKadaluarsa());
                     updateTanggalButton();
 
-                    // Load image
                     if (bahan.getImagePath() != null && !bahan.getImagePath().isEmpty()) {
                         imageUri = Uri.parse(bahan.getImagePath());
                         Glide.with(this).load(imageUri).into(ivBahanImage);
@@ -122,19 +126,13 @@ public class TambahEditBahanActivity extends AppCompatActivity {
     }
 
     private void showDatePicker() {
-        new DatePickerDialog(this, dateSetListener,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        ).show();
+        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateTanggalButton();
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
-
-    private final DatePickerDialog.OnDateSetListener dateSetListener = (view, year, month, dayOfMonth) -> {
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        updateTanggalButton();
-    };
 
     private void updateTanggalButton() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -145,9 +143,10 @@ public class TambahEditBahanActivity extends AppCompatActivity {
         String nama = etNama.getText().toString().trim();
         String jumlahStr = etJumlah.getText().toString().trim();
         String satuan = spSatuan.getSelectedItem().toString();
+        String kategori = spKategori.getSelectedItem().toString();
 
-        if (nama.isEmpty() || jumlahStr.isEmpty()) {
-            Toast.makeText(this, "Harap isi semua field", Toast.LENGTH_SHORT).show();
+        if (nama.isEmpty() || jumlahStr.isEmpty() || spKategori.getSelectedItemPosition() == 0) {
+            Toast.makeText(this, "Harap isi semua field dan pilih kategori", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -159,9 +158,9 @@ public class TambahEditBahanActivity extends AppCompatActivity {
         new Thread(() -> {
             boolean success;
             if (mode.equals("tambah")) {
-                success = dbHelper.tambahBahan(nama, jumlah, satuan, kadaluarsa, userId, imagePath) != -1;
+                success = dbHelper.tambahBahan(nama, jumlah, satuan, kadaluarsa, userId, imagePath, kategori) != -1;
             } else {
-                success = dbHelper.updateBahan(bahanId, nama, jumlah, satuan, kadaluarsa, imagePath);
+                success = dbHelper.updateBahan(bahanId, nama, jumlah, satuan, kadaluarsa, imagePath, kategori);
             }
 
             runOnUiThread(() -> {
