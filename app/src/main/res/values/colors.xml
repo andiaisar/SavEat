@@ -7,4 +7,6 @@
     <color name="w">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+
+    <color name="bg_category_unselected_color">#F0F0F0</color>
 </resources>

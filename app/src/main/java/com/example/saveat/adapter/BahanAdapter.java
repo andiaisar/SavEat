@@ -1,3 +1,4 @@
+// File: app/src/main/java/com/example/saveat/adapter/BahanAdapter.java
 package com.example.saveat.adapter;
 
 import android.net.Uri;
@@ -46,10 +47,19 @@ public class BahanAdapter extends RecyclerView.Adapter<BahanAdapter.BahanViewHol
         BahanHariIni bahan = bahanList.get(position);
         holder.bind(bahan);
 
-        holder.itemView.setOnClickListener(v -> listener.onBahanClick(position));
+        // Menetapkan listener ke itemView
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onBahanClick(holder.getAdapterPosition());
+            }
+        });
+
         holder.itemView.setOnLongClickListener(v -> {
-            listener.onBahanLongClick(position);
-            return true;
+            if (listener != null) {
+                listener.onBahanLongClick(holder.getAdapterPosition());
+                return true;
+            }
+            return false;
         });
     }
 
@@ -72,7 +82,7 @@ public class BahanAdapter extends RecyclerView.Adapter<BahanAdapter.BahanViewHol
 
         public void bind(BahanHariIni bahan) {
             tvNama.setText(bahan.getNama());
-            tvJumlah.setText(String.format("%d %s", bahan.getJumlah(), bahan.getSatuan()));
+            tvJumlah.setText(String.format(Locale.getDefault(), "%d %s", bahan.getJumlah(), bahan.getSatuan()));
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             tvKadaluarsa.setText(String.format("Kadaluarsa: %s", sdf.format(bahan.getKadaluarsa())));
@@ -80,8 +90,11 @@ public class BahanAdapter extends RecyclerView.Adapter<BahanAdapter.BahanViewHol
             if (bahan.getImagePath() != null && !bahan.getImagePath().isEmpty()) {
                 Glide.with(itemView.getContext())
                         .load(Uri.parse(bahan.getImagePath()))
+                        .placeholder(R.drawable.ic_placeholder) // Placeholder yang bagus
+                        .error(R.drawable.ic_error) // Gambar jika terjadi error
                         .into(ivBahan);
             } else {
+                // Set gambar default jika tidak ada path gambar
                 ivBahan.setImageResource(R.drawable.ic_placeholder);
             }
         }

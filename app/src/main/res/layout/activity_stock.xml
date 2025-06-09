@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@drawable/gradient_background">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,193 +15,209 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="32dp"
+            android:paddingBottom="20dp">
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:text="Stok Dapur"
+                android:textSize="32sp"
+                android:textColor="#424242"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="17.23"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/darker_gray"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Stok Dapur"
-                    android:textSize="28sp"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pantau dan kelola semua bahanmu di sini."
-                    android:textSize="14sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:layout_marginTop="2dp"/>
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pantau dan kelola semua bahanmu di sini."
+                android:textSize="16sp"
+                android:textColor="#424242"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="24dp"/>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="16dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="8dp">
+                    android:padding="4dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/search"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="8dp"
+                        app:tint="#424242"/>
 
                     <android.widget.SearchView
                         android:id="@+id/searchView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:queryHint="Search"
+                        android:layout_height="48dp"
+                        android:queryHint="Cari bahan dapur..."
                         android:iconifiedByDefault="false"
-                        android:background="@null"/>
+                        android:background="@null"
+                        android:queryBackground="@null"
+                        android:searchIcon="@null"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="1dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
                 app:cardBackgroundColor="#FFFFFF"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="20dp">
 
-                <HorizontalScrollView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none"
-                    android:padding="8dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                    <LinearLayout
-                        android:id="@+id/menuContainer"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:text="📊 KATEGORI"
+                        android:textSize="12sp"
+                        android:textColor="#2E7D32"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp"/>
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/menuAll"
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:id="@+id/menuContainer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            app:cardCornerRadius="20dp"
-                            app:cardBackgroundColor="#4CAF50"
-                            app:cardElevation="0dp">
+                            android:orientation="horizontal">
 
-                            <TextView
-                                android:id="@+id/tvAll"
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/menuAll"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Semua"
-                                android:textSize="14sp"
-                                android:textColor="#FFFFFF"
-                                android:paddingStart="16dp"
-                                android:paddingEnd="16dp"
-                                android:paddingTop="8dp"
-                                android:paddingBottom="8dp"/>
-                        </com.google.android.material.card.MaterialCardView>
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="24dp"
+                                app:cardBackgroundColor="#F0F0F0"
+                                app:cardElevation="2dp">
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/menuFruit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            app:cardCornerRadius="20dp"
-                            app:cardBackgroundColor="#F0F0F0"
-                            app:cardElevation="0dp">
+                                <TextView
+                                    android:id="@+id/tvAll"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🍽️ Semua"
+                                    android:textSize="14sp"
+                                    android:textColor="#424242"
+                                    android:textStyle="bold"
+                                    android:paddingStart="20dp"
+                                    android:paddingEnd="20dp"
+                                    android:paddingTop="12dp"
+                                    android:paddingBottom="12dp"/>
+                            </com.google.android.material.card.MaterialCardView>
 
-                            <TextView
-                                android:id="@+id/tvFruit"
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/menuFruit"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Buah"
-                                android:textSize="14sp"
-                                android:textColor="#757575"
-                                android:paddingStart="16dp"
-                                android:paddingEnd="16dp"
-                                android:paddingTop="8dp"
-                                android:paddingBottom="8dp"/>
-                        </com.google.android.material.card.MaterialCardView>
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="24dp"
+                                app:cardBackgroundColor="#F0F0F0"
+                                app:cardElevation="1dp">
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/menuVegetable"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            app:cardCornerRadius="20dp"
-                            app:cardBackgroundColor="#F0F0F0"
-                            app:cardElevation="0dp">
+                                <TextView
+                                    android:id="@+id/tvFruit"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🍎 Buah"
+                                    android:textSize="14sp"
+                                    android:textColor="#424242"
+                                    android:paddingStart="20dp"
+                                    android:paddingEnd="20dp"
+                                    android:paddingTop="12dp"
+                                    android:paddingBottom="12dp"/>
+                            </com.google.android.material.card.MaterialCardView>
 
-                            <TextView
-                                android:id="@+id/tvVegetable"
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/menuVegetable"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Sayur"
-                                android:textSize="14sp"
-                                android:textColor="#757575"
-                                android:paddingStart="16dp"
-                                android:paddingEnd="16dp"
-                                android:paddingTop="8dp"
-                                android:paddingBottom="8dp"/>
-                        </com.google.android.material.card.MaterialCardView>
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="24dp"
+                                app:cardBackgroundColor="#F0F0F0"
+                                app:cardElevation="1dp">
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/menuMeat"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            app:cardCornerRadius="20dp"
-                            app:cardBackgroundColor="#F0F0F0"
-                            app:cardElevation="0dp">
+                                <TextView
+                                    android:id="@+id/tvVegetable"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🥕 Sayur"
+                                    android:textSize="14sp"
+                                    android:textColor="#424242"
+                                    android:paddingStart="20dp"
+                                    android:paddingEnd="20dp"
+                                    android:paddingTop="12dp"
+                                    android:paddingBottom="12dp"/>
+                            </com.google.android.material.card.MaterialCardView>
 
-                            <TextView
-                                android:id="@+id/tvMeat"
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/menuMeat"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Daging"
-                                android:textSize="14sp"
-                                android:textColor="#757575"
-                                android:paddingStart="16dp"
-                                android:paddingEnd="16dp"
-                                android:paddingTop="8dp"
-                                android:paddingBottom="8dp"/>
-                        </com.google.android.material.card.MaterialCardView>
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="24dp"
+                                app:cardBackgroundColor="#F0F0F0"
+                                app:cardElevation="1dp">
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/menuDrink"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:cardCornerRadius="20dp"
-                            app:cardBackgroundColor="#F0F0F0"
-                            app:cardElevation="0dp">
+                                <TextView
+                                    android:id="@+id/tvMeat"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🥩 Daging"
+                                    android:textSize="14sp"
+                                    android:textColor="#424242"
+                                    android:paddingStart="20dp"
+                                    android:paddingEnd="20dp"
+                                    android:paddingTop="12dp"
+                                    android:paddingBottom="12dp"/>
+                            </com.google.android.material.card.MaterialCardView>
 
-                            <TextView
-                                android:id="@+id/tvDrink"
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/menuDrink"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Minuman"
-                                android:textSize="14sp"
-                                android:textColor="#757575"
-                                android:paddingStart="16dp"
-                                android:paddingEnd="16dp"
-                                android:paddingTop="8dp"
-                                android:paddingBottom="8dp"/>
-                        </com.google.android.material.card.MaterialCardView>
-                    </LinearLayout>
-                </HorizontalScrollView>
+                                app:cardCornerRadius="24dp"
+                                app:cardBackgroundColor="#F0F0F0"
+                                app:cardElevation="1dp">
+
+                                <TextView
+                                    android:id="@+id/tvDrink"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🥤 Minuman"
+                                    android:textSize="14sp"
+                                    android:textColor="#424242"
+                                    android:paddingStart="20dp"
+                                    android:paddingEnd="20dp"
+                                    android:paddingTop="12dp"
+                                    android:paddingBottom="12dp"/>
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </HorizontalScrollView>
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
@@ -212,46 +228,41 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="16dp">
 
                     <TextView
                         android:id="@+id/tvCategoryTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Semua Bahan"
-                        android:textSize="18sp"
+                        android:text=" Semua Bahan"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="#212121"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Lihat Semua"
-                        android:textColor="#4CAF50"
-                        android:textSize="14sp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
                 </RelativeLayout>
 
                 <TextView
                     android:id="@+id/tvEmptyStock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Belum ada bahan dapur"
+                    android:text="🍽️ Belum ada bahan dapur\nTambahkan bahan pertama Anda!"
                     android:gravity="center"
                     android:visibility="gone"
+                    android:textColor="#020202"
+                    android:textSize="16sp"
+                    android:alpha="1.0"
                     android:layout_marginTop="32dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvIngredients"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"/>
+                    android:visibility="visible"
+                    android:clipToPadding="false"/>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="80dp"/>
+                android:layout_height="100dp"/>
         </LinearLayout>
     </ScrollView>
 
@@ -261,10 +272,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="96dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="100dp"
         app:backgroundTint="#4CAF50"
-        android:src="@android:drawable/ic_input_add"
-        app:tint="#FFFFFF"/>
+        android:src="@drawable/ic_add_custom"
+        app:tint="@android:color/white"
+        app:elevation="8dp"
+        app:borderWidth="0dp"
+        app:fabSize="normal"/>
 
 </RelativeLayout>
