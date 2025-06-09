@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "saveat.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2; // Incremented version
 
     private static final String TABEL_USERS = "users";
     private static final String COLUMN_ID = "id";
@@ -29,6 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SATUAN = "satuan";
     private static final String COLUMN_KADALUARSA = "kadaluarsa";
     private static final String COLUMN_USER_ID = "user_id";
+    private static final String COLUMN_IMAGE_PATH = "image_path"; // Added this line
 
     private static final String CREATE_TABLE_USERS =
             "CREATE TABLE " + TABEL_USERS + " (" +
@@ -46,6 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_SATUAN + " TEXT NOT NULL," +
                     COLUMN_KADALUARSA + " INTEGER NOT NULL," + // timestamp
                     COLUMN_USER_ID + " INTEGER NOT NULL," +
+                    COLUMN_IMAGE_PATH + " TEXT," + // Added this line
                     "FOREIGN KEY(" + COLUMN_USER_ID + ") REFERENCES " + TABEL_USERS + "(" + COLUMN_ID + ")" +
                     ")";
 
@@ -61,9 +63,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABEL_USERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABEL_BAHAN);
-        onCreate(db);
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + TABEL_BAHAN + " ADD COLUMN " + COLUMN_IMAGE_PATH + " TEXT;");
+        } else {
+            db.execSQL("DROP TABLE IF EXISTS " + TABEL_USERS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABEL_BAHAN);
+            onCreate(db);
+        }
     }
 
     public long adduser(String username, String password, String email) {
@@ -110,21 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return name;
     }
 
-    public String getUserByEmail(String email) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABEL_USERS, null, COLUMN_EMAIL + "=?", new String[]{email}, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            String name = cursor.getString(0);
-            cursor.close();
-            db.close();
-            return name;
-        }
-        db.close();
-        return null;
-    }
-
-    public long tambahBahan(String nama, int jumlah, String satuan, long kadaluarsaTimestamp, long userId) {
+    public long tambahBahan(String nama, int jumlah, String satuan, long kadaluarsaTimestamp, long userId, String imagePath) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAMA_BAHAN, nama);
@@ -132,6 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SATUAN, satuan);
         values.put(COLUMN_KADALUARSA, kadaluarsaTimestamp);
         values.put(COLUMN_USER_ID, userId);
+        values.put(COLUMN_IMAGE_PATH, imagePath); // Added this line
 
         long id = db.insert(TABEL_BAHAN, null, values);
         db.close();
@@ -155,8 +148,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int jumlah = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_JUMLAH));
                 String satuan = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SATUAN));
                 Date kadaluarsa = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_KADALUARSA)));
+                String imagePath = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH)); // Added this line
 
-                BahanHariIni bahan = new BahanHariIni(id, nama, jumlah, satuan, kadaluarsa);
+                BahanHariIni bahan = new BahanHariIni(id, nama, jumlah, satuan, kadaluarsa, imagePath); // Modified this line
                 bahanList.add(bahan);
             } while (cursor.moveToNext());
         }
@@ -174,13 +168,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected > 0;
     }
 
-    public boolean updateBahan(long bahanId, String nama, int jumlah, String satuan, long kadaluarsa) {
+    public boolean updateBahan(long bahanId, String nama, int jumlah, String satuan, long kadaluarsa, String imagePath) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAMA_BAHAN, nama);
         values.put(COLUMN_JUMLAH, jumlah);
         values.put(COLUMN_SATUAN, satuan);
         values.put(COLUMN_KADALUARSA, kadaluarsa);
+        values.put(COLUMN_IMAGE_PATH, imagePath); // Added this line
 
         int rowsAffected = db.update(TABEL_BAHAN, values,
                 COLUMN_BAHAN_ID + " = ?",
@@ -189,7 +184,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected > 0;
     }
 
-    // Tambahkan method berikut ke DatabaseHelper Anda
     public BahanHariIni getBahanById(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABEL_BAHAN,
@@ -204,7 +198,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAMA_BAHAN)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_JUMLAH)),
                     cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SATUAN)),
-                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_KADALUARSA)))
+                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_KADALUARSA))),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_PATH)) // Modified this line
             );
             cursor.close();
             return bahan;

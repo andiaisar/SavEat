@@ -17,7 +17,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Header Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,7 +48,6 @@
                     android:layout_marginTop="2dp"/>
             </LinearLayout>
 
-            <!-- Search Bar -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,7 +72,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Categories -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -207,7 +204,6 @@
                 </HorizontalScrollView>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Content Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -237,10 +233,20 @@
                         android:layout_centerVertical="true"/>
                 </RelativeLayout>
 
+                <TextView
+                    android:id="@+id/tvEmptyStock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Belum ada bahan dapur"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:layout_marginTop="32dp"/>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvIngredients"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:visibility="visible"/>
             </LinearLayout>
 
             <View

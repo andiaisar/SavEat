@@ -1,13 +1,16 @@
 package com.example.saveat.adapter;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.saveat.R;
 import com.example.saveat.model.BahanHariIni;
 
@@ -57,12 +60,14 @@ public class BahanAdapter extends RecyclerView.Adapter<BahanAdapter.BahanViewHol
 
     static class BahanViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvNama, tvJumlah, tvKadaluarsa;
+        private final ImageView ivBahan;
 
         public BahanViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNama = itemView.findViewById(R.id.tvNamaBahan);
             tvJumlah = itemView.findViewById(R.id.tvJumlahBahan);
             tvKadaluarsa = itemView.findViewById(R.id.tvKadaluarsa);
+            ivBahan = itemView.findViewById(R.id.ivBahan);
         }
 
         public void bind(BahanHariIni bahan) {
@@ -71,6 +76,14 @@ public class BahanAdapter extends RecyclerView.Adapter<BahanAdapter.BahanViewHol
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             tvKadaluarsa.setText(String.format("Kadaluarsa: %s", sdf.format(bahan.getKadaluarsa())));
+
+            if (bahan.getImagePath() != null && !bahan.getImagePath().isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(Uri.parse(bahan.getImagePath()))
+                        .into(ivBahan);
+            } else {
+                ivBahan.setImageResource(R.drawable.ic_placeholder);
+            }
         }
     }
 }

@@ -1,18 +1,24 @@
 package com.example.saveat;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.saveat.database.DatabaseHelper;
 import com.example.saveat.model.BahanHariIni;
 
@@ -24,11 +30,15 @@ import java.util.Locale;
 public class TambahEditBahanActivity extends AppCompatActivity {
     private EditText etNama, etJumlah;
     private Spinner spSatuan;
-    private Button btnPilihTanggal, btnSimpan;
+    private Button btnPilihTanggal, btnSimpan, btnPilihGambar;
+    private ImageView ivBahanImage;
     private Calendar calendar;
     private DatabaseHelper dbHelper;
     private String mode;
     private long bahanId;
+    private Uri imageUri;
+
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,8 @@ public class TambahEditBahanActivity extends AppCompatActivity {
         spSatuan = findViewById(R.id.sp_satuan);
         btnPilihTanggal = findViewById(R.id.btn_pilih_tanggal);
         btnSimpan = findViewById(R.id.btn_simpan);
+        btnPilihGambar = findViewById(R.id.btn_pilih_gambar);
+        ivBahanImage = findViewById(R.id.iv_bahan_image);
 
         // Setup spinner satuan
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -62,6 +74,21 @@ public class TambahEditBahanActivity extends AppCompatActivity {
 
         btnPilihTanggal.setOnClickListener(v -> showDatePicker());
         btnSimpan.setOnClickListener(v -> simpanBahan());
+        btnPilihGambar.setOnClickListener(v -> openFileChooser());
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            Glide.with(this).load(imageUri).into(ivBahanImage);
+        }
     }
 
     private void loadBahanData() {
@@ -83,6 +110,12 @@ public class TambahEditBahanActivity extends AppCompatActivity {
                     // Set tanggal
                     calendar.setTime(bahan.getKadaluarsa());
                     updateTanggalButton();
+
+                    // Load image
+                    if (bahan.getImagePath() != null && !bahan.getImagePath().isEmpty()) {
+                        imageUri = Uri.parse(bahan.getImagePath());
+                        Glide.with(this).load(imageUri).into(ivBahanImage);
+                    }
                 }
             });
         }).start();
@@ -93,17 +126,14 @@ public class TambahEditBahanActivity extends AppCompatActivity {
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
-        ).show(); // Corrected missing closing parenthesis
+        ).show();
     }
 
-    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month);
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateTanggalButton();
-        }
+    private final DatePickerDialog.OnDateSetListener dateSetListener = (view, year, month, dayOfMonth) -> {
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        updateTanggalButton();
     };
 
     private void updateTanggalButton() {
@@ -124,13 +154,14 @@ public class TambahEditBahanActivity extends AppCompatActivity {
         int jumlah = Integer.parseInt(jumlahStr);
         long userId = getCurrentUserId();
         long kadaluarsa = calendar.getTimeInMillis();
+        String imagePath = (imageUri != null) ? imageUri.toString() : null;
 
         new Thread(() -> {
             boolean success;
             if (mode.equals("tambah")) {
-                success = dbHelper.tambahBahan(nama, jumlah, satuan, kadaluarsa, userId) != -1;
+                success = dbHelper.tambahBahan(nama, jumlah, satuan, kadaluarsa, userId, imagePath) != -1;
             } else {
-                success = dbHelper.updateBahan(bahanId, nama, jumlah, satuan, kadaluarsa);
+                success = dbHelper.updateBahan(bahanId, nama, jumlah, satuan, kadaluarsa, imagePath);
             }
 
             runOnUiThread(() -> {

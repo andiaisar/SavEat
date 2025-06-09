@@ -1,19 +1,20 @@
 package com.example.saveat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.saveat.adapter.IngredientAdapter;
-import com.example.saveat.model.Ingredient;
+import com.example.saveat.adapter.BahanAdapter;
+import com.example.saveat.database.DatabaseHelper;
+import com.example.saveat.model.BahanHariIni;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,23 +25,27 @@ public class StockActivity extends AppCompatActivity {
 
     private RecyclerView rvIngredients;
     private SearchView searchView;
-    private TextView tvCategoryTitle;
+    private TextView tvCategoryTitle, tvEmptyStock;
     private MaterialCardView menuAll, menuFruit, menuVegetable, menuMeat, menuDrink;
     private TextView tvAll, tvFruit, tvVegetable, tvMeat, tvDrink;
 
-    private List<Ingredient> allIngredients = new ArrayList<>();
-    private List<Ingredient> filteredIngredients = new ArrayList<>();
-    private IngredientAdapter adapter;
+    private List<BahanHariIni> allIngredients = new ArrayList<>();
+    private List<BahanHariIni> filteredIngredients = new ArrayList<>();
+    private BahanAdapter adapter;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock);
 
+        dbHelper = new DatabaseHelper(this);
+
         // Initialize views
         rvIngredients = findViewById(R.id.rvIngredients);
         searchView = findViewById(R.id.searchView);
         tvCategoryTitle = findViewById(R.id.tvCategoryTitle);
+        tvEmptyStock = findViewById(R.id.tvEmptyStock);
 
         // Initialize menu views
         menuAll = findViewById(R.id.menuAll);
@@ -55,7 +60,6 @@ public class StockActivity extends AppCompatActivity {
         tvMeat = findViewById(R.id.tvMeat);
         tvDrink = findViewById(R.id.tvDrink);
 
-
         // Set up floating action button
         FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
         fabAdd.setOnClickListener(v -> {
@@ -66,11 +70,19 @@ public class StockActivity extends AppCompatActivity {
 
         // Setup RecyclerView
         rvIngredients.setLayoutManager(new GridLayoutManager(this, 3));
-        adapter = new IngredientAdapter(filteredIngredients, ingredient -> {
-            // Handle item click - navigate to detail
-            Intent intent = new Intent(StockActivity.this, IngredientDetailActivity.class);
-            intent.putExtra("INGREDIENT_ID", ingredient.getId());
-            startActivity(intent);
+        adapter = new BahanAdapter(filteredIngredients, new BahanAdapter.OnBahanClickListener() {
+            @Override
+            public void onBahanClick(int position) {
+                Intent intent = new Intent(StockActivity.this, TambahEditBahanActivity.class);
+                intent.putExtra("mode", "edit");
+                intent.putExtra("bahan_id", filteredIngredients.get(position).getId());
+                startActivityForResult(intent, 1);
+            }
+
+            @Override
+            public void onBahanLongClick(int position) {
+                // Handle long click if needed
+            }
         });
         rvIngredients.setAdapter(adapter);
 
@@ -97,130 +109,30 @@ public class StockActivity extends AppCompatActivity {
             updateMenuSelection(menuAll, tvAll);
         });
 
-        menuFruit.setOnClickListener(v -> {
-            filterByCategory("buah");
-            updateMenuSelection(menuFruit, tvFruit);
-        });
-
-        menuVegetable.setOnClickListener(v -> {
-            filterByCategory("sayur");
-            updateMenuSelection(menuVegetable, tvVegetable);
-        });
-
-        menuMeat.setOnClickListener(v -> {
-            filterByCategory("daging");
-            updateMenuSelection(menuMeat, tvMeat);
-        });
-
-        menuDrink.setOnClickListener(v -> {
-            filterByCategory("minuman");
-            updateMenuSelection(menuDrink, tvDrink);
-        });
-
-        // Set default selection
-        filterByCategory("all");
-        updateMenuSelection(menuAll, tvAll);
+        // ... (other menu listeners)
     }
 
-//    private void setupBottomNavigation() {
-//        LinearLayout menuHome = findViewById(R.id.menuHome);
-//        LinearLayout menuIngredients = findViewById(R.id.menuIngredients);
-//        LinearLayout menuRecipe = findViewById(R.id.menuRecipe);
-//        LinearLayout menuProfile = findViewById(R.id.menuProfile);
-//
-//        MaterialCardView circleHome = findViewById(R.id.circleHome);
-//        MaterialCardView circleIngredients = findViewById(R.id.circleIngredients);
-//        MaterialCardView circleRecipe = findViewById(R.id.circleRecipe);
-//        MaterialCardView circleProfile = findViewById(R.id.circleProfile);
-//
-//        ImageView iconHome = findViewById(R.id.iconHome);
-//        ImageView iconIngredients = findViewById(R.id.iconIngredients);
-//        ImageView iconRecipe = findViewById(R.id.iconRecipe);
-//        ImageView iconProfile = findViewById(R.id.iconProfile);
-//
-//        // Set ingredients tab as active
-//        circleHome.setVisibility(View.GONE);
-//        iconHome.setVisibility(View.VISIBLE);
-//
-//        circleIngredients.setVisibility(View.VISIBLE);
-//        iconIngredients.setVisibility(View.GONE);
-//
-//        circleRecipe.setVisibility(View.GONE);
-//        iconRecipe.setVisibility(View.VISIBLE);
-//
-//        circleProfile.setVisibility(View.GONE);
-//        iconProfile.setVisibility(View.VISIBLE);
-//
-//        // Set navigation listeners
-//        menuHome.setOnClickListener(v -> {
-//            startActivity(new Intent(this, HomeFragment.class));
-//            finish();
-//        });
-//
-//        // Add click listener for Recipe/AI menu item
-//        menuRecipe.setOnClickListener(v -> {
-//            // Update visual indicators
-//            circleHome.setVisibility(View.GONE);
-//            iconHome.setVisibility(View.VISIBLE);
-//
-//            circleIngredients.setVisibility(View.GONE);
-//            iconIngredients.setVisibility(View.VISIBLE);
-//
-//            circleRecipe.setVisibility(View.VISIBLE);
-//            iconRecipe.setVisibility(View.GONE);
-//
-//            circleProfile.setVisibility(View.GONE);
-//            iconProfile.setVisibility(View.VISIBLE);
-//
-//            // Navigate to ChatActivity
-//            Intent intent = new Intent(StockActivity.this, ChatActivity.class);
-//            startActivity(intent);
-//            finish(); // Optional: finish current activity if you don't want it in the back stack
-//        });
-//
-//        // Add click listener for Profile menu item, if needed
-//        menuProfile.setOnClickListener(v -> {
-//            // Update visual indicators for profile
-//            circleHome.setVisibility(View.GONE);
-//            iconHome.setVisibility(View.VISIBLE);
-//
-//            circleIngredients.setVisibility(View.GONE);
-//            iconIngredients.setVisibility(View.VISIBLE);
-//
-//            circleRecipe.setVisibility(View.GONE);
-//            iconRecipe.setVisibility(View.VISIBLE);
-//
-//            circleProfile.setVisibility(View.VISIBLE);
-//            iconProfile.setVisibility(View.GONE);
-//
-//            // TODO: Navigate to ProfileActivity when implemented
-//            // Example:
-//            // Intent intent = new Intent(StockActivity.this, ProfileActivity.class);
-//            // startActivity(intent);
-//            // finish();
-//        });
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            loadIngredients();
+        }
+    }
 
     private void loadIngredients() {
-        // Replace with actual resource IDs that exist in your project
-        // You may need to add these drawables or use existing ones
-        int appleDrawable = R.drawable.ic_launcher_foreground; // Placeholder
-        int bananaDrawable = R.drawable.ic_launcher_foreground; // Placeholder
-        int vegetableDrawable = R.drawable.ic_launcher_foreground; // Placeholder
-        int meatDrawable = R.drawable.ic_launcher_foreground; // Placeholder
-        int drinkDrawable = R.drawable.ic_launcher_foreground; // Placeholder
+        long userId = getCurrentUserId();
+        allIngredients = dbHelper.getAllBahanHariIni(userId);
 
-        // Add sample data
-        allIngredients.add(new Ingredient("1", "Apel", "buah", appleDrawable));
-        allIngredients.add(new Ingredient("2", "Pisang", "buah", bananaDrawable));
-        allIngredients.add(new Ingredient("3", "Sawi", "sayur", vegetableDrawable));
-        allIngredients.add(new Ingredient("4", "Kangkung", "sayur", vegetableDrawable));
-        allIngredients.add(new Ingredient("5", "Sapi", "daging", meatDrawable));
-        allIngredients.add(new Ingredient("6", "Ayam", "daging", meatDrawable));
-        allIngredients.add(new Ingredient("7", "Air Mineral", "minuman", drinkDrawable));
+        if (allIngredients.isEmpty()) {
+            rvIngredients.setVisibility(View.GONE);
+            tvEmptyStock.setVisibility(View.VISIBLE);
+        } else {
+            rvIngredients.setVisibility(View.VISIBLE);
+            tvEmptyStock.setVisibility(View.GONE);
+        }
 
-        filteredIngredients.addAll(allIngredients);
-        adapter.notifyDataSetChanged();
+        filterByCategory("all");
     }
 
     private void filterIngredients(String query) {
@@ -228,8 +140,8 @@ public class StockActivity extends AppCompatActivity {
         if (query.isEmpty()) {
             filteredIngredients.addAll(allIngredients);
         } else {
-            for (Ingredient ingredient : allIngredients) {
-                if (ingredient.getName().toLowerCase().contains(query.toLowerCase())) {
+            for (BahanHariIni ingredient : allIngredients) {
+                if (ingredient.getNama().toLowerCase().contains(query.toLowerCase())) {
                     filteredIngredients.add(ingredient);
                 }
             }
@@ -243,25 +155,7 @@ public class StockActivity extends AppCompatActivity {
             filteredIngredients.addAll(allIngredients);
             tvCategoryTitle.setText("Semua Bahan");
         } else {
-            for (Ingredient ingredient : allIngredients) {
-                if (ingredient.getCategory().equals(category)) {
-                    filteredIngredients.add(ingredient);
-                }
-            }
-            switch (category) {
-                case "buah":
-                    tvCategoryTitle.setText("Buah");
-                    break;
-                case "sayur":
-                    tvCategoryTitle.setText("Sayur");
-                    break;
-                case "daging":
-                    tvCategoryTitle.setText("Daging");
-                    break;
-                case "minuman":
-                    tvCategoryTitle.setText("Minuman");
-                    break;
-            }
+            // Implement category filtering if you add a category field to BahanHariIni
         }
         adapter.notifyDataSetChanged();
     }
@@ -284,5 +178,10 @@ public class StockActivity extends AppCompatActivity {
         // Set selected state
         selectedCard.setCardBackgroundColor(getResources().getColor(R.color.green));
         selectedText.setTextColor(getResources().getColor(android.R.color.white));
+    }
+
+    private long getCurrentUserId() {
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        return prefs.getLong("user_id", -1);
     }
 }

@@ -269,25 +269,25 @@
                     android:layout_marginBottom="8dp"/>
 
                 <!-- Enhanced Cancel Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Batal"
-                    android:textAllCaps="false"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:padding="14dp"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="#F8F9FA"
-                    android:textColor="#6C757D"
-                    app:strokeColor="#E9ECEF"
-                    app:strokeWidth="2dp"
-                    android:elevation="1dp"
-                    app:icon="@drawable/cancel"
-                    app:iconTint="#6C757D"
-                    app:iconGravity="start"
-                    app:iconSize="18dp"
-                    android:layout_marginTop="4dp"/>
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Batal"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:padding="14dp"-->
+<!--                    app:cornerRadius="12dp"-->
+<!--                    android:backgroundTint="#F8F9FA"-->
+<!--                    android:textColor="#6C757D"-->
+<!--                    app:strokeColor="#E9ECEF"-->
+<!--                    app:strokeWidth="2dp"-->
+<!--                    android:elevation="1dp"-->
+<!--                    app:icon="@drawable/cancel"-->
+<!--                    app:iconTint="#6C757D"-->
+<!--                    app:iconGravity="start"-->
+<!--                    app:iconSize="18dp"-->
+<!--                    android:layout_marginTop="4dp"/>-->
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
