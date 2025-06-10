@@ -125,39 +125,34 @@ public class BahanAdapter extends RecyclerView.Adapter<BahanAdapter.BahanViewHol
         }
 
         private void updateExpiryInfo(long days, Date expiryDate) {
-            // Persiapkan format tanggal
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
             String formattedDate = sdf.format(expiryDate);
 
-            // Persiapkan warna
-            int defaultTextColor = ContextCompat.getColor(context, R.color.black);
             int lightTextColor = ContextCompat.getColor(context, R.color.white);
-            int redColor = ContextCompat.getColor(context, R.color.red);
-
-            // Reset tampilan ke default
-            cardBahan.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white));
-            tvNama.setTextColor(defaultTextColor);
-            tvJumlah.setTextColor(ContextCompat.getColor(context, R.color.gray));
-            tvKadaluarsa.setTextColor(redColor);
-            cardBahan.setStrokeWidth(0);
-
-            // Buat teks dengan HTML untuk format yang lebih baik (opsional tapi disarankan)
             String warningText;
 
-            if (days < 0) {
-                warningText = "<b>Sudah Kadaluarsa</b><br><small>" + formattedDate + "</small>";
+            // Memeriksa apakah bahan mendekati kedaluwarsa atau sudah kedaluwarsa
+            if (days < 0 || days <= 7) {
+                // Atur visual untuk kondisi berbahaya (merah)
                 setWarningVisuals(lightTextColor);
-            } else if (days == 0) {
-                warningText = "<b>Hari Ini!</b><br><small>" + formattedDate + "</small>";
-                setWarningVisuals(lightTextColor);
-            } else if (days <= 7) {
-                // Tampilkan "Dalam X hari" beserta tanggalnya
-                warningText = String.format(Locale.getDefault(), "<b>Dalam %d hari</b><br><small>(%s)</small>", days + 1, formattedDate);
-                setWarningVisuals(lightTextColor);
+                if (days < 0) {
+                    warningText = "<b>Sudah Kadaluarsa</b><br><small>" + formattedDate + "</small>";
+                } else if (days == 0) {
+                    warningText = "<b>Hari Ini!</b><br><small>" + formattedDate + "</small>";
+                } else {
+                    // Menambahkan 1 hari agar hitungan lebih intuitif (misal "dalam 1 hari" bukan "dalam 0 hari")
+                    warningText = String.format(Locale.getDefault(), "<b>Dalam %d hari</b><br><small>(%s)</small>", days + 1, formattedDate);
+                }
             } else {
-                // Jika masih lama, hanya tampilkan tanggal
-                warningText = formattedDate;
+                // Atur visual untuk kondisi aman (putih/default)
+                int defaultTextColor = ContextCompat.getColor(context, R.color.black);
+                cardBahan.setBackgroundResource(0); // Hapus background drawable jika ada
+                cardBahan.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                tvNama.setTextColor(defaultTextColor);
+                tvJumlah.setTextColor(ContextCompat.getColor(context, R.color.gray));
                 tvKadaluarsa.setTextColor(ContextCompat.getColor(context, R.color.green));
+
+                warningText = formattedDate;
             }
 
             // Terapkan teks ke TextView
