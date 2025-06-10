@@ -1,306 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@drawable/gradient_background"
+    tools:context=".RingkasanBahanActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#50A462"
-            android:elevation="4dp"
-            app:title="Ringkasan Bahan Hari Ini"
-            app:titleCentered="true"
-            app:titleTextColor="@android:color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:padding="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <!-- Added empty state TextView -->
+            <ImageView
+                android:id="@+id/btn_back_ringkasan"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/arrow"
+                app:tint="#424242"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:layout_marginBottom="16dp"/>
+
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ringkasan Bahan"
+                android:textSize="32sp"
+                android:textColor="#424242"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lihat semua bahan yang mendekati &amp; sudah kadaluarsa."
+                android:textSize="16sp"
+                android:textColor="#666666"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="24dp"/>
+
+            <LinearLayout
                 android:id="@+id/tv_empty_state"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:orientation="vertical"
                 android:gravity="center"
-                android:text="Belum ada bahan yang ditambahkan"
-                android:textSize="16sp"
-                android:visibility="gone" />
+                android:layout_marginTop="50dp"
+                android:visibility="gone">
 
-            <!-- Added RecyclerView for bahan hari ini -->
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/stok"
+                    android:alpha="0.7"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Belum ada bahan di stok"
+                    android:textSize="18sp"
+                    android:textColor="#424242"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tambahkan bahan pertamamu dengan menekan tombol (+)"
+                    android:textAlignment="center"
+                    android:textColor="#666666"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_bahan_hari_ini"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
+                android:clipToPadding="false"
+                android:paddingBottom="80dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_bahan"/>
 
-            <!-- Bahan Hari Ini Section -->
-<!--            <com.google.android.material.card.MaterialCardView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="16dp"-->
-<!--                app:cardCornerRadius="12dp"-->
-<!--                app:cardElevation="2dp">-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="horizontal"-->
-<!--                    android:padding="16dp">-->
-
-<!--                    <ImageView-->
-<!--                        android:layout_width="80dp"-->
-<!--                        android:layout_height="80dp"-->
-<!--                        android:src="@drawable/segar"-->
-<!--                        android:contentDescription="Fresh ingredients"/>-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="vertical"-->
-<!--                        android:layout_marginStart="16dp">-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="Bahan Hari Ini"-->
-<!--                            android:textSize="18sp"-->
-<!--                            android:textStyle="bold"-->
-<!--                            android:textColor="#333333"/>-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="3 Bahan Segar"-->
-<!--                            android:textSize="16sp"-->
-<!--                            android:textColor="#50A462"-->
-<!--                            android:layout_marginTop="4dp"/>-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="Cocok buat dimasak hari ini"-->
-<!--                            android:textSize="14sp"-->
-<!--                            android:textColor="#666666"/>-->
-<!--                    </LinearLayout>-->
-<!--                </LinearLayout>-->
-<!--            </com.google.android.material.card.MaterialCardView>-->
-
-<!--            &lt;!&ndash; Hampir Kedaluwarsa Section &ndash;&gt;-->
-<!--            <com.google.android.material.card.MaterialCardView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="16dp"-->
-<!--                app:cardCornerRadius="12dp"-->
-<!--                app:cardElevation="2dp">-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="horizontal"-->
-<!--                    android:padding="16dp">-->
-
-<!--                    <ImageView-->
-<!--                        android:layout_width="80dp"-->
-<!--                        android:layout_height="80dp"-->
-<!--                        android:src="@drawable/kalender"-->
-<!--                        android:contentDescription="Warning" />-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="vertical"-->
-<!--                        android:layout_marginStart="16dp">-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="Hurry"-->
-<!--                            android:textSize="18sp"-->
-<!--                            android:textStyle="bold"-->
-<!--                            android:textColor="#FFA000"/>-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="2 Bahan Hampir Kedaluwarsa"-->
-<!--                            android:textSize="16sp"-->
-<!--                            android:layout_marginTop="4dp"/>-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="Cek sebelum besok"-->
-<!--                            android:textSize="14sp"-->
-<!--                            android:textColor="#666666"/>-->
-<!--                    </LinearLayout>-->
-<!--                </LinearLayout>-->
-<!--            </com.google.android.material.card.MaterialCardView>-->
-
-<!--            &lt;!&ndash; Kedaluwarsa Section &ndash;&gt;-->
-<!--            <com.google.android.material.card.MaterialCardView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="16dp"-->
-<!--                app:cardCornerRadius="12dp"-->
-<!--                app:cardElevation="2dp"-->
-<!--                app:strokeColor="#E53935"-->
-<!--                app:strokeWidth="1dp">-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="horizontal"-->
-<!--                    android:padding="16dp">-->
-
-<!--                    <ImageView-->
-<!--                        android:layout_width="80dp"-->
-<!--                        android:layout_height="80dp"-->
-<!--                        android:src="@drawable/expired"-->
-<!--                        android:contentDescription="Expired"/>-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="vertical"-->
-<!--                        android:layout_marginStart="16dp">-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="1 Bahan Kedaluwarsa"-->
-<!--                            android:textSize="18sp"-->
-<!--                            android:textStyle="bold"-->
-<!--                            android:textColor="#E53935"/>-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="Telur (expired 2 hari lalu)"-->
-<!--                            android:textSize="16sp"-->
-<!--                            android:textColor="#333333"-->
-<!--                            android:layout_marginTop="4dp"/>-->
-<!--                    </LinearLayout>-->
-<!--                </LinearLayout>-->
-<!--            </com.google.android.material.card.MaterialCardView>-->
-
-<!--            &lt;!&ndash; Belum Digunakan Section &ndash;&gt;-->
-<!--            <com.google.android.material.card.MaterialCardView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="24dp"-->
-<!--                app:cardCornerRadius="12dp"-->
-<!--                app:cardElevation="2dp">-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="horizontal"-->
-<!--                    android:padding="16dp">-->
-
-<!--                    <ImageView-->
-<!--                        android:layout_width="80dp"-->
-<!--                        android:layout_height="80dp"-->
-<!--                        android:src="@drawable/stok"-->
-<!--                        android:contentDescription="Unused"/>-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="vertical"-->
-<!--                        android:layout_marginStart="16dp">-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="5 Bahan Belum Digunakan"-->
-<!--                            android:textSize="18sp"-->
-<!--                            android:textStyle="bold"-->
-<!--                            android:textColor="#333333"/>-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="Sejak 5 hari lalu"-->
-<!--                            android:textSize="16sp"-->
-<!--                            android:layout_marginTop="4dp"/>-->
-<!--                    </LinearLayout>-->
-<!--                </LinearLayout>-->
-<!--            </com.google.android.material.card.MaterialCardView>-->
-
-<!--            &lt;!&ndash; Button Container &ndash;&gt;-->
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="vertical"-->
-<!--                android:layout_marginBottom="16dp">-->
-
-<!--                &lt;!&ndash; Lihat Semua Stok Button &ndash;&gt;-->
-<!--                <com.google.android.material.button.MaterialButton-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Lihat Semua Stok"-->
-<!--                    android:textAllCaps="false"-->
-<!--                    android:textSize="16sp"-->
-<!--                    android:padding="12dp"-->
-<!--                    app:cornerRadius="8dp"-->
-<!--                    app:icon="@drawable/rightchevron"-->
-<!--                    app:iconTint="@color/white"-->
-<!--                    app:iconGravity="end"-->
-<!--                    android:backgroundTint="#50A462"-->
-<!--                    android:layout_marginBottom="8dp"/>-->
-
-<!--                &lt;!&ndash; Enhanced Cancel Button &ndash;&gt;-->
-<!--&lt;!&ndash;                <com.google.android.material.button.MaterialButton&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:text="Batal"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:textAllCaps="false"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:textSize="16sp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:textStyle="bold"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:padding="14dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    app:cornerRadius="12dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:backgroundTint="#F8F9FA"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:textColor="#6C757D"&ndash;&gt;-->
-<!--&lt;!&ndash;                    app:strokeColor="#E9ECEF"&ndash;&gt;-->
-<!--&lt;!&ndash;                    app:strokeWidth="2dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:elevation="1dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    app:icon="@drawable/cancel"&ndash;&gt;-->
-<!--&lt;!&ndash;                    app:iconTint="#6C757D"&ndash;&gt;-->
-<!--&lt;!&ndash;                    app:iconGravity="start"&ndash;&gt;-->
-<!--&lt;!&ndash;                    app:iconSize="18dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_marginTop="4dp"/>&ndash;&gt;-->
-<!--            </LinearLayout>-->
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
-    <!-- Added FloatingActionButton -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_bahan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="24dp"
         android:contentDescription="Tambah Bahan"
-        app:srcCompat="@android:drawable/ic_input_add"
-        app:backgroundTint="#50A462" />
+        app:srcCompat="@drawable/ic_add_custom"
+        app:backgroundTint="#4CAF50"
+        app:tint="@android:color/white"
+        app:elevation="8dp"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

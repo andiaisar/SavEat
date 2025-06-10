@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/saveat/EditProfileActivity.java
 package com.example.saveat;
 
 import android.Manifest;
@@ -12,10 +11,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.example.saveat.database.DatabaseHelper;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfileActivity extends AppCompatActivity {
@@ -32,9 +32,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 100;
 
     private CircleImageView profileImage;
-    private ImageView btnBack, btnEditImage;
+    private ImageView btnBack;
+    private FloatingActionButton btnEditImage;
     private EditText etNama, etEmail;
-    private Spinner spinnerGender;
+    private AutoCompleteTextView spinnerGender;
     private Button btnSaveChanges;
 
     private DatabaseHelper dbHelper;
@@ -62,30 +63,6 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void showImagePickerDialog() {
-        // Menggunakan ACTION_OPEN_DOCUMENT untuk akses file yang andal dan persisten.
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            final int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION;
-            try {
-                // Dengan ACTION_OPEN_DOCUMENT, panggilan ini sekarang akan berhasil.
-                getContentResolver().takePersistableUriPermission(imageUri, takeFlags);
-            } catch (SecurityException e) {
-                Log.e("EditProfileActivity", "Gagal mengambil izin persisten", e);
-            }
-            Glide.with(this).load(imageUri).into(profileImage);
-        }
-    }
-
     private void initViews() {
         profileImage = findViewById(R.id.profileImage);
         btnBack = findViewById(R.id.btnBack);
@@ -98,8 +75,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void setupSpinner() {
         String[] genderOptions = {"Laki-Laki", "Perempuan"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genderOptions);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, genderOptions);
         spinnerGender.setAdapter(adapter);
     }
 
@@ -127,8 +103,7 @@ public class EditProfileActivity extends AppCompatActivity {
             etEmail.setText(email);
 
             if (gender != null) {
-                ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerGender.getAdapter();
-                spinnerGender.setSelection(adapter.getPosition(gender));
+                spinnerGender.setText(gender, false);
             }
 
             if (currentImagePath != null && !currentImagePath.isEmpty()) {
@@ -141,7 +116,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private void saveChanges() {
         String nama = etNama.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
-        String gender = spinnerGender.getSelectedItem().toString();
+        String gender = spinnerGender.getText().toString();
         String finalImagePath = (imageUri != null) ? imageUri.toString() : currentImagePath;
 
         if (nama.isEmpty() || email.isEmpty()) {
@@ -162,6 +137,28 @@ public class EditProfileActivity extends AppCompatActivity {
             finish();
         } else {
             Toast.makeText(this, "Gagal memperbarui profil", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showImagePickerDialog() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            final int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION;
+            try {
+                getContentResolver().takePersistableUriPermission(imageUri, takeFlags);
+            } catch (SecurityException e) {
+                Log.e("EditProfileActivity", "Gagal mengambil izin persisten", e);
+            }
+            Glide.with(this).load(imageUri).into(profileImage);
         }
     }
 

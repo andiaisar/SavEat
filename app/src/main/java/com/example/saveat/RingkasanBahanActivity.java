@@ -4,19 +4,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.saveat.adapter.BahanAdapter;
 import com.example.saveat.database.DatabaseHelper;
 import com.example.saveat.model.BahanHariIni;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +23,9 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
     private BahanAdapter bahanAdapter;
     private List<BahanHariIni> bahanList = new ArrayList<>();
     private DatabaseHelper dbHelper;
-    private TextView tvEmptyState;
+    private LinearLayout tvEmptyState; // Diubah ke LinearLayout sesuai layout baru
     private FloatingActionButton fabAddBahan;
+    private ImageView btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,35 +33,44 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
         setContentView(R.layout.activity_ringkasan_bahan);
 
         // Inisialisasi view
-        rvBahanHariIni = findViewById(R.id.rv_bahan_hari_ini);
-        tvEmptyState = findViewById(R.id.tv_empty_state);
-        fabAddBahan = findViewById(R.id.fab_add_bahan);
-
-        // Setup toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Ringkasan Bahan");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        initViews();
 
         // Setup database helper
         dbHelper = new DatabaseHelper(this);
 
         // Setup recyclerview
+        setupRecyclerView();
+
+        // Setup listener
+        setupListeners();
+
+        // Load data
+        loadBahanHariIni();
+    }
+
+    private void initViews() {
+        rvBahanHariIni = findViewById(R.id.rv_bahan_hari_ini);
+        tvEmptyState = findViewById(R.id.tv_empty_state);
+        fabAddBahan = findViewById(R.id.fab_add_bahan);
+        btnBack = findViewById(R.id.btn_back_ringkasan);
+    }
+
+    private void setupRecyclerView() {
         bahanAdapter = new BahanAdapter(bahanList, this);
         rvBahanHariIni.setLayoutManager(new LinearLayoutManager(this));
         rvBahanHariIni.setAdapter(bahanAdapter);
+    }
 
-        // Setup FAB
+    private void setupListeners() {
+        // Listener untuk tombol kembali kustom
+        btnBack.setOnClickListener(v -> onBackPressed());
+
+        // Listener untuk FAB
         fabAddBahan.setOnClickListener(v -> {
             Intent intent = new Intent(RingkasanBahanActivity.this, TambahEditBahanActivity.class);
             intent.putExtra("mode", "tambah");
             startActivityForResult(intent, 1);
         });
-
-        // Load data
-        loadBahanHariIni();
     }
 
     @Override
@@ -101,7 +108,6 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
 
     @Override
     public void onBahanClick(int position) {
-        // Handle ketika item bahan diklik
         BahanHariIni bahan = bahanList.get(position);
         Intent intent = new Intent(this, TambahEditBahanActivity.class);
         intent.putExtra("mode", "edit");
@@ -111,7 +117,6 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
 
     @Override
     public void onBahanLongClick(int position) {
-        // Handle long click untuk opsi hapus
         BahanHariIni bahan = bahanList.get(position);
         showDeleteConfirmationDialog(bahan);
     }
@@ -122,12 +127,6 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
         if (resultCode == RESULT_OK) {
             loadBahanHariIni();
         }
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
 
     private void showDeleteConfirmationDialog(BahanHariIni bahan) {
@@ -142,11 +141,9 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
     private void deleteBahan(BahanHariIni bahan) {
         new Thread(() -> {
             boolean success = dbHelper.hapusBahan(bahan.getId());
-            runOnUiThread(() -> {
-                if (success) {
-                    loadBahanHariIni();
-                }
-            });
+            if (success) {
+                runOnUiThread(this::loadBahanHariIni);
+            }
         }).start();
     }
 }

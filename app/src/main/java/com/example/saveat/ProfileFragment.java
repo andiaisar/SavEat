@@ -1,4 +1,3 @@
-// andiaisar/saveat/SavEat-0aebf4ca14c8e3c387ff043acb369607ffc30613/app/src/main/java/com/example/saveat/ProfileFragment.java
 package com.example.saveat;
 
 import android.content.Context;
@@ -24,7 +23,8 @@ public class ProfileFragment extends Fragment {
 
     private CircleImageView profileImage;
     private TextView tvUserName, tvUserEmail;
-    private LinearLayout layoutEditProfile, layoutRiwayatBahan, layoutLogout;
+    private LinearLayout layoutEditProfile, layoutRiwayatBahan;
+    private View layoutLogout; // PERBAIKAN: Tipe diubah dari LinearLayout menjadi View
     private DatabaseHelper dbHelper;
 
     @Nullable
@@ -43,7 +43,7 @@ public class ProfileFragment extends Fragment {
         tvUserEmail = view.findViewById(R.id.tvUserEmail);
         layoutEditProfile = view.findViewById(R.id.layoutEditProfile);
         layoutRiwayatBahan = view.findViewById(R.id.layoutRiwayatBahan);
-        layoutLogout = view.findViewById(R.id.layoutLogout);
+        layoutLogout = view.findViewById(R.id.layoutLogout); // Baris ini sekarang aman
     }
 
     private void setupListeners() {
@@ -56,6 +56,7 @@ public class ProfileFragment extends Fragment {
         });
 
         layoutLogout.setOnClickListener(v -> {
+            if (getActivity() == null) return;
             // Hapus data dari SharedPreferences
             SharedPreferences prefs = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
             prefs.edit().clear().apply();
@@ -77,6 +78,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadProfileData() {
+        if (getActivity() == null) return;
+
         SharedPreferences prefs = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         long userId = prefs.getLong("user_id", -1);
 
@@ -93,11 +96,11 @@ public class ProfileFragment extends Fragment {
                 if (imagePath != null && !imagePath.isEmpty()) {
                     Glide.with(this)
                             .load(Uri.parse(imagePath))
-                            .placeholder(R.drawable.usercircle) // Gambar default
-                            .error(R.drawable.usercircle)       // Gambar jika error
+                            .placeholder(R.drawable.usercircle)
+                            .error(R.drawable.usercircle)
                             .into(profileImage);
                 } else {
-                    profileImage.setImageResource(R.drawable.usercircle); // Set gambar default
+                    profileImage.setImageResource(R.drawable.usercircle);
                 }
                 cursor.close();
             }
