@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -90,6 +91,11 @@ public class ChatActivity extends Fragment {
     }
 
     private void sendMessage() {
+        if (!NetworkUtils.isNetworkAvailable(getContext())) {
+            Toast.makeText(getContext(), R.string.no_internet_toast, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String message = etMessage.getText().toString().trim();
         if (TextUtils.isEmpty(message)) return;
 
@@ -128,13 +134,21 @@ public class ChatActivity extends Fragment {
                         showErrorMessage("Maaf, saya tidak bisa memproses pertanyaan Anda saat ini.");
                     }
                 } else {
-                    showErrorMessage("Gagal terhubung ke AI.");
+                    if (!NetworkUtils.isNetworkAvailable(getContext())) {
+                        showErrorMessage("Koneksi internet tidak tersedia.");
+                    } else {
+                        showErrorMessage("Gagal terhubung ke AI. Kode: " + response.code());
+                    }
                 }
             }
             @Override
             public void onFailure(Call<GeminiResponse> call, Throwable t) {
                 hideTypingIndicator();
-                showErrorMessage("Koneksi gagal. Silakan coba lagi.");
+                if (!NetworkUtils.isNetworkAvailable(getContext())) {
+                    showErrorMessage("Koneksi internet tidak tersedia. Silakan coba lagi.");
+                } else {
+                    showErrorMessage("Koneksi gagal. Silakan coba lagi.");
+                }
             }
         });
     }

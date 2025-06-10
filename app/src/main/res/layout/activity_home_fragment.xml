@@ -242,7 +242,13 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp">
+                android:layout_marginBottom="32dp"
+                android:animateLayoutChanges="true">
+
+                <include layout="@layout/layout_no_internet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"/>
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/loadingPlaceholder"
@@ -252,22 +258,19 @@
                     app:cardCornerRadius="16dp"
                     app:cardElevation="4dp"
                     app:cardBackgroundColor="#F8F9FA"
-                    android:visibility="visible">
-
+                    android:visibility="gone">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="center"
                         android:padding="24dp">
-
                         <ProgressBar
                             android:id="@+id/pbPopularRecipes"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_marginBottom="8dp"
                             android:indeterminateTint="#4CAF50"/>
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -284,13 +287,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone">
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="12dp">
-
                         <FrameLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -298,7 +299,6 @@
                             android:layout_marginEnd="6dp">
                             <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe1"/>
                         </FrameLayout>
-
                         <FrameLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -307,13 +307,11 @@
                             <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe2"/>
                         </FrameLayout>
                     </LinearLayout>
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="12dp">
-
                         <FrameLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -321,7 +319,6 @@
                             android:layout_marginEnd="6dp">
                             <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe3"/>
                         </FrameLayout>
-
                         <FrameLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -330,12 +327,10 @@
                             <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe4"/>
                         </FrameLayout>
                     </LinearLayout>
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
                         <FrameLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -343,7 +338,6 @@
                             android:layout_marginEnd="6dp">
                             <include layout="@layout/item_card_recipe" android:id="@+id/cardRecipe5"/>
                         </FrameLayout>
-
                         <FrameLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

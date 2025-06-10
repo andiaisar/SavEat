@@ -18,4 +18,10 @@
         <item>Daging</item>
         <item>Minuman</item>
     </string-array>
+
+    <string name="no_internet_connection">Tidak Ada Koneksi Internet</string>
+    <string name="check_your_connection_and_try_again">Periksa koneksi Anda dan coba lagi.</string>
+    <string name="refresh">Segarkan</string>
+    <string name="no_internet_toast">Koneksi internet tidak tersedia. Silakan coba lagi.</string>
+
 </resources>
