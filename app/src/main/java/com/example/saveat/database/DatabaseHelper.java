@@ -1,3 +1,4 @@
+// path: andiaisar/saveat/SavEat-a4dd37e359fdb10bba0ede4fd3587c68fb7f1b40/app/src/main/java/com/example/saveat/database/DatabaseHelper.java
 package com.example.saveat.database;
 
 import android.content.ContentValues;
@@ -37,7 +38,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_IMAGE_PATH = "image_path";
     private static final String COLUMN_CATEGORY = "category";
 
-    // ... (sisa kode constructor, onCreate, onUpgrade tidak berubah)
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -85,7 +85,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    // ... (metode CRUD untuk User tidak berubah)
     public long adduser(String username, String password, String email) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -156,7 +155,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rowsAffected > 0;
     }
 
-    // ... (metode CRUD untuk Bahan)
     public long tambahBahan(String nama, int jumlah, String satuan, long kadaluarsaTimestamp, long userId, String imagePath, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

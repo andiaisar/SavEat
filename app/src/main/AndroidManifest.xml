@@ -24,10 +24,6 @@
             android:name=".EditProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
-            android:exported="false" />
-        <!-- REMOVE: <activity android:name=".ChatActivity" android:exported="false" /> -->
-        <activity
             android:name=".IngredientDetailActivity"
             android:exported="false" />
         <activity

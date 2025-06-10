@@ -1,3 +1,4 @@
+// path: andiaisar/saveat/SavEat-a4dd37e359fdb10bba0ede4fd3587c68fb7f1b40/app/src/main/java/com/example/saveat/StockFragment.java
 package com.example.saveat;
 
 import android.content.Intent;
@@ -55,7 +56,6 @@ public class StockFragment extends Fragment {
         setupRecyclerView();
         setupListeners();
 
-        // Panggil filterByCategory di awal untuk set state default
         filterByCategory(currentCategory);
 
         return view;
@@ -114,26 +114,22 @@ public class StockFragment extends Fragment {
     private void updateMenuSelection() {
         if (getContext() == null) return;
 
-        // Definisikan warna dari resource
         int selectedBackgroundColor = ContextCompat.getColor(getContext(), R.color.green);
         int unselectedBackgroundColor = ContextCompat.getColor(getContext(), R.color.bg_category_unselected_color);
         int selectedTextColor = ContextCompat.getColor(getContext(), R.color.white);
-        int unselectedTextColor = ContextCompat.getColor(getContext(), R.color.black); // Gunakan hitam untuk kontras
+        int unselectedTextColor = ContextCompat.getColor(getContext(), R.color.black);
 
         for (Map.Entry<MaterialCardView, String> entry : categoryViews.entrySet()) {
             MaterialCardView card = entry.getKey();
             String categoryName = entry.getValue();
-            // Setiap card di dalam menuContainer memiliki satu anak yaitu TextView
             TextView textView = (TextView) card.getChildAt(0);
 
             if (categoryName.equalsIgnoreCase(currentCategory)) {
-                // Atur style untuk kartu yang dipilih
                 card.setCardBackgroundColor(selectedBackgroundColor);
                 textView.setTextColor(selectedTextColor);
             } else {
-                // Atur style untuk kartu yang tidak dipilih
                 card.setCardBackgroundColor(unselectedBackgroundColor);
-                textView.setTextColor(unselectedTextColor); // Set teks menjadi hitam agar kontras
+                textView.setTextColor(unselectedTextColor);
             }
         }
     }
@@ -170,7 +166,6 @@ public class StockFragment extends Fragment {
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     updateEmptyView();
-                    // Gunakan kategori yang saat ini aktif untuk memfilter
                     filterByCategory(currentCategory);
                 });
             }

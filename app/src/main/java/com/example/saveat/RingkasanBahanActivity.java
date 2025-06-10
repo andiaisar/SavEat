@@ -1,3 +1,4 @@
+// path: andiaisar/saveat/SavEat-a4dd37e359fdb10bba0ede4fd3587c68fb7f1b40/app/src/main/java/com/example/saveat/RingkasanBahanActivity.java
 package com.example.saveat;
 
 import android.content.Intent;
