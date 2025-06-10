@@ -34,7 +34,7 @@ public class TambahEditBahanActivity extends AppCompatActivity {
     private String mode;
     private long bahanId;
     private Uri imageUri;
-    private String currentImagePath; // Untuk menyimpan path gambar yang sudah ada
+    private String currentImagePath;
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -57,7 +57,7 @@ public class TambahEditBahanActivity extends AppCompatActivity {
             loadBahanData();
         } else {
             setTitle("Tambah Bahan");
-            updateTanggalButton(); // Set tanggal hari ini sebagai default
+            updateTanggalButton();
         }
 
         btnPilihTanggal.setOnClickListener(v -> showDatePicker());
@@ -186,7 +186,7 @@ public class TambahEditBahanActivity extends AppCompatActivity {
                 final int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION;
                 getContentResolver().takePersistableUriPermission(imageUri, takeFlags);
                 Glide.with(this).load(imageUri).into(ivBahanImage);
-                currentImagePath = imageUri.toString(); // Update path saat gambar baru dipilih
+                currentImagePath = imageUri.toString();
             } catch (SecurityException e) {
                 Log.e("TambahEditBahan", "Gagal mengambil izin URI persisten", e);
             }

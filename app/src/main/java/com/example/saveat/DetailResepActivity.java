@@ -25,7 +25,6 @@ public class DetailResepActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_resep);
 
-        // Initialize views
         initViews();
 
         // Setup Toolbar

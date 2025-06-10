@@ -21,7 +21,7 @@ public class RetrofitClient {
         return mealRetrofit.create(ApiService.class);
     }
 
-    // New Gemini AI API client
+    // Gemini AI API client
     public static ApiService getGeminiApiService() {
         if (geminiRetrofit == null) {
             geminiRetrofit = new Retrofit.Builder()

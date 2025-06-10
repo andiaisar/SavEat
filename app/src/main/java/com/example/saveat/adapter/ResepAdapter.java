@@ -75,14 +75,11 @@ public class ResepAdapter extends RecyclerView.Adapter<ResepAdapter.ResepViewHol
                     try {
                         Glide.with(itemView.getContext())
                             .load(resep.getStrMealThumb())
-                            // Remove placeholder and error resources that don't exist
                             .into(ivGambarResep);
                     } catch (Exception e) {
-                        // Handle any Glide loading exceptions
                         ivGambarResep.setImageResource(android.R.drawable.ic_menu_gallery);
                     }
                 } else {
-                    // Set a default Android system image if meal thumbnail is null or empty
                     ivGambarResep.setImageResource(android.R.drawable.ic_menu_gallery);
                 }
 

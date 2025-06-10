@@ -71,10 +71,11 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // Muat data setiap kali fragmen ini aktif
     @Override
     public void onResume() {
         super.onResume();
-        loadProfileData(); // Muat data setiap kali fragmen ini aktif
+        loadProfileData();
     }
 
     private void loadProfileData() {

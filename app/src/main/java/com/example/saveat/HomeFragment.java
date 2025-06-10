@@ -111,22 +111,17 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    /**
-     * Metode utama untuk memuat resep.
-     * Mengatur UI berdasarkan status koneksi internet dan hasil panggilan API.
-     */
     private void loadPopularRecipes() {
         Log.d(TAG, "Memulai proses loadPopularRecipes...");
 
-        // 1. Langsung tampilkan progress bar dan sembunyikan yang lain
+        // Langsung tampilkan progress bar dan sembunyikan yang lain
         loadingPlaceholder.setVisibility(View.VISIBLE);
         noInternetLayout.setVisibility(View.GONE);
         hsvPopularRecipes.setVisibility(View.GONE);
 
-        // 2. Cek koneksi internet
+        // Cek koneksi internet
         if (!NetworkUtils.isNetworkAvailable(getContext())) {
             Log.w(TAG, "Tidak ada koneksi internet terdeteksi.");
-            // Jika tidak ada internet, langsung ganti progress bar dengan tampilan "No Internet"
             showNoInternetView();
             return;
         }
@@ -137,9 +132,7 @@ public class HomeFragment extends Fragment {
         executeRecipeApiCall();
     }
 
-    /**
-     * Menjalankan pemanggilan ke TheMealDB API.
-     */
+    //Menjalankan pemanggilan ke TheMealDB API.
     private void executeRecipeApiCall() {
         // Reset status kegagalan setiap kali mencoba lagi
         isAnyApiCallFailed.set(false);
@@ -147,7 +140,7 @@ public class HomeFragment extends Fragment {
         ApiService apiService = RetrofitClient.getMealApiService();
         if (apiService == null) {
             Log.e(TAG, "ApiService tidak tersedia.");
-            showNoInternetView(); // Anggap sebagai kegagalan jika service null
+            showNoInternetView();
             return;
         }
 
@@ -159,7 +152,7 @@ public class HomeFragment extends Fragment {
             apiService.getRandomMeal().enqueue(new Callback<MealResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<MealResponse> call, @NonNull Response<MealResponse> response) {
-                    if (!isAdded()) return; // Pastikan fragment masih ter-attach
+                    if (!isAdded()) return;
 
                     if (response.isSuccessful() && response.body() != null && response.body().getMeals() != null && !response.body().getMeals().isEmpty()) {
                         updateRecipeCards(response.body().getMeals().get(0), position);
@@ -183,10 +176,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /**
-     * Dipanggil setelah setiap panggilan API selesai (baik sukses maupun gagal).
-     * Ketika semua panggilan selesai, metode ini akan memutuskan UI mana yang akan ditampilkan.
-     */
     private void checkIfAllRequestsDone(int completed, int total) {
         if (completed == total && getActivity() != null) {
             getActivity().runOnUiThread(() -> {
@@ -205,9 +194,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /**
-     * Metode terpusat untuk menampilkan layout "No Internet".
-     */
     private void showNoInternetView() {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
@@ -218,7 +204,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // --- METODE HELPER LAINNYA (TIDAK ADA PERUBAHAN) ---
 
     private void checkExpiryWarnings() {
         if (getContext() == null) return;

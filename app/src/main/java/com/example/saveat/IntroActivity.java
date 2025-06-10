@@ -79,32 +79,30 @@ public class IntroActivity extends AppCompatActivity {
             Log.e(TAG, "Error setting up dots indicator: " + e.getMessage());
         }
 
-        // Tombol "Lanjut" atau "Mulai"
         buttonNext.setOnClickListener(v -> {
             if (viewPager.getCurrentItem() < introItems.size() - 1) {
                 viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
             } else {
-                // Tandai bahwa intro sudah dilihat
                 SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putBoolean("is_first_run", false);
                 editor.apply();
                 Log.d(TAG, "is_first_run set to false, navigating to SignInActivity");
 
-                // Pindah ke SignInActivity
+
                 startActivity(new Intent(IntroActivity.this, SignInActivity.class));
                 finish();
             }
         });
 
-        // Add this after initializing your other views
+
         ImageView btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> {
                 if (viewPager.getCurrentItem() > 0) {
                     viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
                 } else {
-                    finish(); // Exit intro if on first page
+                    finish();
                 }
             });
         }

@@ -15,10 +15,10 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout menuHome, menuIngredients, menuRecipe, menuProfile;
     private MaterialCardView circleHome, circleIngredients, circleRecipe, circleProfile;
     private ImageView iconHome, iconIngredients, iconRecipe, iconProfile;
-    private StockFragment stockFragment; // For Ingredients
+    private StockFragment stockFragment;
     private HomeFragment homeFragment;
     private ProfileFragment profileFragment;
-    private ChatActivity chatFragment; // For AI Chat
+    private ChatActivity chatFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setupNavigationListeners();
 
-        // Set home as default selection
+
         navigateTo("home");
     }
 
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void navigateTo(String destination) {
-        // Reset all navigation items first
         resetAllNavItems();
 
         switch (destination) {
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             case "ingredients":
                 circleIngredients.setVisibility(View.VISIBLE);
                 iconIngredients.setVisibility(View.GONE);
-                loadStockFragment(); // <-- Perubahan di sini
+                loadStockFragment();
                 break;
 
             case "recipe":
@@ -110,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
         loadFragment(homeFragment);
     }
 
-    // <-- Tambahkan metode ini
     private void loadStockFragment() {
         if (stockFragment == null) {
             stockFragment = new StockFragment();
