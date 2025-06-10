@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/saveat/HomeFragment.java
 package com.example.saveat;
 
 import android.content.Context;
@@ -7,14 +6,12 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.saveat.APIService.ApiService;
 import com.example.saveat.APIService.RetrofitClient;
 import com.example.saveat.database.DatabaseHelper;
+import com.example.saveat.model.BahanHariIni;
 import com.example.saveat.model.MealResponse;
 import com.google.android.material.card.MaterialCardView;
 import java.util.ArrayList;
@@ -39,12 +37,13 @@ public class HomeFragment extends Fragment {
     private ImageView ivProfileHome;
     private TextView tvNamaUser;
 
-    // Deklarasi view lainnya
+    private RelativeLayout cardNotification;
+    private TextView tvNotificationCount;
+
     private MaterialCardView cardRingkasanBahan;
     private LinearLayout tvLihatDetail;
     private MaterialCardView loadingPlaceholder;
     private LinearLayout hsvPopularRecipes;
-    private List<MealResponse.Meal> popularRecipesList = new ArrayList<>();
     private MaterialCardView cardRecipe1, cardRecipe2, cardRecipe3, cardRecipe4, cardRecipe5, cardRecipe6;
     private TextView tvRecipe1Title, tvRecipe2Title, tvRecipe3Title, tvRecipe4Title, tvRecipe5Title, tvRecipe6Title;
     private ImageView ivRecipe1, ivRecipe2, ivRecipe3, ivRecipe4, ivRecipe5, ivRecipe6;
@@ -66,24 +65,54 @@ public class HomeFragment extends Fragment {
         String userName = prefs.getString("user_name", "User");
         tvNamaUser.setText("Hello, " + userName + "!");
 
+        cardNotification = view.findViewById(R.id.cardNotification);
+        tvNotificationCount = view.findViewById(R.id.tvNotificationCount);
+
         cardRingkasanBahan = view.findViewById(R.id.cardRingkasanBahan);
         tvLihatDetail = view.findViewById(R.id.tvLihatDetail);
         loadingPlaceholder = view.findViewById(R.id.loadingPlaceholder);
         hsvPopularRecipes = view.findViewById(R.id.hsvPopularRecipes);
+
         View.OnClickListener ringkasanListener = v -> {
             Intent intent = new Intent(getActivity(), RingkasanBahanActivity.class);
             startActivity(intent);
         };
         cardRingkasanBahan.setOnClickListener(ringkasanListener);
         tvLihatDetail.setOnClickListener(ringkasanListener);
+        cardNotification.setOnClickListener(ringkasanListener);
+
         initRecipeCards(view);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // Selalu panggil metode ini saat fragmen kembali aktif untuk memastikan data terbaru
         loadProfileImage();
+        checkExpiryWarnings();
+    }
+
+    private void checkExpiryWarnings() {
+        if (getContext() == null) return;
+        SharedPreferences prefs = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        long userId = prefs.getLong("user_id", -1);
+
+        if (userId != -1) {
+            new Thread(() -> {
+                List<BahanHariIni> expiringItems = dbHelper.getBahanMendekatiKadaluarsa(userId);
+                final int expiringCount = expiringItems.size();
+
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        if (expiringCount > 0) {
+                            tvNotificationCount.setText(String.valueOf(expiringCount));
+                            tvNotificationCount.setVisibility(View.VISIBLE);
+                        } else {
+                            tvNotificationCount.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            }).start();
+        }
     }
 
     private void loadProfileImage() {
@@ -117,7 +146,8 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // Metode-metode lain untuk memuat resep tidak diubah
+    // Metode sisa (initRecipeCards, loadPopularRecipes, dll.) tidak berubah
+    // ... (salin sisa metode dari kode sebelumnya)
     private void initRecipeCards(View view) {
         cardRecipe1 = view.findViewById(R.id.cardRecipe1);
         cardRecipe2 = view.findViewById(R.id.cardRecipe2);
@@ -290,5 +320,4 @@ public class HomeFragment extends Fragment {
             default: return null;
         }
     }
-
 }

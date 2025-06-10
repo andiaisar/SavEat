@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +22,7 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
     private BahanAdapter bahanAdapter;
     private List<BahanHariIni> bahanList = new ArrayList<>();
     private DatabaseHelper dbHelper;
-    private LinearLayout tvEmptyState; // Diubah ke LinearLayout sesuai layout baru
+    private LinearLayout tvEmptyState;
     private FloatingActionButton fabAddBahan;
     private ImageView btnBack;
 
@@ -32,20 +31,10 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ringkasan_bahan);
 
-        // Inisialisasi view
         initViews();
-
-        // Setup database helper
         dbHelper = new DatabaseHelper(this);
-
-        // Setup recyclerview
         setupRecyclerView();
-
-        // Setup listener
         setupListeners();
-
-        // Load data
-        loadBahanHariIni();
     }
 
     private void initViews() {
@@ -56,16 +45,13 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
     }
 
     private void setupRecyclerView() {
-        bahanAdapter = new BahanAdapter(bahanList, this);
+        bahanAdapter = new BahanAdapter(bahanList, this, R.layout.item_bahan_list);
         rvBahanHariIni.setLayoutManager(new LinearLayoutManager(this));
         rvBahanHariIni.setAdapter(bahanAdapter);
     }
 
     private void setupListeners() {
-        // Listener untuk tombol kembali kustom
         btnBack.setOnClickListener(v -> onBackPressed());
-
-        // Listener untuk FAB
         fabAddBahan.setOnClickListener(v -> {
             Intent intent = new Intent(RingkasanBahanActivity.this, TambahEditBahanActivity.class);
             intent.putExtra("mode", "tambah");
@@ -89,7 +75,6 @@ public class RingkasanBahanActivity extends AppCompatActivity implements BahanAd
                 bahanList.addAll(bahan);
                 bahanAdapter.notifyDataSetChanged();
 
-                // Tampilkan empty state jika tidak ada data
                 if (bahanList.isEmpty()) {
                     tvEmptyState.setVisibility(View.VISIBLE);
                     rvBahanHariIni.setVisibility(View.GONE);

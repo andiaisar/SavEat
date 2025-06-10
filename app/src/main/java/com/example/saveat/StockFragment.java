@@ -1,5 +1,3 @@
-// File: app/src/main/java/com/example/saveat/StockFragment.java
-
 package com.example.saveat;
 
 import android.content.Intent;
@@ -50,28 +48,31 @@ public class StockFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_stock, container, false); //
+        View view = inflater.inflate(R.layout.activity_stock, container, false);
 
         dbHelper = new DatabaseHelper(getContext());
         initViews(view);
         setupRecyclerView();
         setupListeners();
 
+        // Panggil filterByCategory di awal untuk set state default
+        filterByCategory(currentCategory);
+
         return view;
     }
 
     private void initViews(View view) {
-        rvIngredients = view.findViewById(R.id.rvIngredients); //
-        searchView = view.findViewById(R.id.searchView); //
-        tvCategoryTitle = view.findViewById(R.id.tvCategoryTitle); //
-        tvEmptyStock = view.findViewById(R.id.tvEmptyStock); //
-        fabAdd = view.findViewById(R.id.fabAdd); //
+        rvIngredients = view.findViewById(R.id.rvIngredients);
+        searchView = view.findViewById(R.id.searchView);
+        tvCategoryTitle = view.findViewById(R.id.tvCategoryTitle);
+        tvEmptyStock = view.findViewById(R.id.tvEmptyStock);
+        fabAdd = view.findViewById(R.id.fabAdd);
 
-        categoryViews.put(view.findViewById(R.id.menuAll), "Semua"); //
-        categoryViews.put(view.findViewById(R.id.menuFruit), "Buah"); //
-        categoryViews.put(view.findViewById(R.id.menuVegetable), "Sayur"); //
-        categoryViews.put(view.findViewById(R.id.menuMeat), "Daging"); //
-        categoryViews.put(view.findViewById(R.id.menuDrink), "Minuman"); //
+        categoryViews.put(view.findViewById(R.id.menuAll), "Semua");
+        categoryViews.put(view.findViewById(R.id.menuFruit), "Buah");
+        categoryViews.put(view.findViewById(R.id.menuVegetable), "Sayur");
+        categoryViews.put(view.findViewById(R.id.menuMeat), "Daging");
+        categoryViews.put(view.findViewById(R.id.menuDrink), "Minuman");
     }
 
     @Override
@@ -105,53 +106,48 @@ public class StockFragment extends Fragment {
 
     private void filterByCategory(String category) {
         currentCategory = category;
-        tvCategoryTitle.setText(category);
+        tvCategoryTitle.setText("Kategori: " + category);
         updateMenuSelection();
         filterIngredients(searchView.getQuery().toString());
     }
 
-    /**
-     * PERUBAHAN UTAMA DI SINI
-     * Metode ini sekarang hanya mengubah warna latar belakang kartu.
-     * Warna teks tidak diubah, sehingga akan selalu terlihat.
-     */
     private void updateMenuSelection() {
         if (getContext() == null) return;
 
-        // Definisikan warna untuk status terpilih dan tidak terpilih
-        int selectedColor = ContextCompat.getColor(getContext(), R.color.green); //
-        int defaultColor = ContextCompat.getColor(getContext(), R.color.bg_category_unselected_color);
+        // Definisikan warna dari resource
+        int selectedBackgroundColor = ContextCompat.getColor(getContext(), R.color.green);
+        int unselectedBackgroundColor = ContextCompat.getColor(getContext(), R.color.bg_category_unselected_color);
+        int selectedTextColor = ContextCompat.getColor(getContext(), R.color.white);
+        int unselectedTextColor = ContextCompat.getColor(getContext(), R.color.black); // Gunakan hitam untuk kontras
 
-        // Loop melalui setiap kartu kategori
         for (Map.Entry<MaterialCardView, String> entry : categoryViews.entrySet()) {
             MaterialCardView card = entry.getKey();
             String categoryName = entry.getValue();
+            // Setiap card di dalam menuContainer memiliki satu anak yaitu TextView
+            TextView textView = (TextView) card.getChildAt(0);
 
-            // Cek apakah kategori saat ini adalah yang sedang dipilih
             if (categoryName.equalsIgnoreCase(currentCategory)) {
-                // Jika ya, set warna latar belakang menjadi hijau (terpilih)
-                card.setCardBackgroundColor(selectedColor);
+                // Atur style untuk kartu yang dipilih
+                card.setCardBackgroundColor(selectedBackgroundColor);
+                textView.setTextColor(selectedTextColor);
             } else {
-                // Jika tidak, set warna latar belakang menjadi abu-abu (default)
-                card.setCardBackgroundColor(defaultColor);
+                // Atur style untuk kartu yang tidak dipilih
+                card.setCardBackgroundColor(unselectedBackgroundColor);
+                textView.setTextColor(unselectedTextColor); // Set teks menjadi hitam agar kontras
             }
-
-            // Kita tidak lagi mengubah warna teks di sini.
-            // TextView textView = (TextView) card.getChildAt(0);
-            // textView.setTextColor(...); <-- Baris ini dihapus
         }
     }
 
     private void setupRecyclerView() {
-        rvIngredients.setLayoutManager(new GridLayoutManager(getContext(), 3)); //
+        rvIngredients.setLayoutManager(new GridLayoutManager(getContext(), 2));
         adapter = new BahanAdapter(filteredIngredients, new BahanAdapter.OnBahanClickListener() {
             @Override
             public void onBahanClick(int position) {
                 if (position >= 0 && position < filteredIngredients.size()) {
                     BahanHariIni clickedBahan = filteredIngredients.get(position);
-                    Intent intent = new Intent(getActivity(), TambahEditBahanActivity.class); //
+                    Intent intent = new Intent(getActivity(), TambahEditBahanActivity.class);
                     intent.putExtra("mode", "edit");
-                    intent.putExtra("bahan_id", clickedBahan.getId()); //
+                    intent.putExtra("bahan_id", clickedBahan.getId());
                     startActivityForResult(intent, ADD_EDIT_REQUEST_CODE);
                 }
             }
@@ -162,7 +158,7 @@ public class StockFragment extends Fragment {
                     showDeleteConfirmationDialog(filteredIngredients.get(position));
                 }
             }
-        });
+        }, R.layout.item_bahan_grid);
         rvIngredients.setAdapter(adapter);
     }
 
@@ -170,10 +166,11 @@ public class StockFragment extends Fragment {
         long userId = getCurrentUserId();
         new Thread(() -> {
             allIngredients.clear();
-            allIngredients.addAll(dbHelper.getAllBahanHariIni(userId)); //
+            allIngredients.addAll(dbHelper.getAllBahanHariIni(userId));
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     updateEmptyView();
+                    // Gunakan kategori yang saat ini aktif untuk memfilter
                     filterByCategory(currentCategory);
                 });
             }
@@ -197,7 +194,7 @@ public class StockFragment extends Fragment {
             categoryFiltered.addAll(allIngredients);
         } else {
             for (BahanHariIni ingredient : allIngredients) {
-                if (currentCategory.equalsIgnoreCase(ingredient.getCategory())) { //
+                if (currentCategory.equalsIgnoreCase(ingredient.getCategory())) {
                     categoryFiltered.add(ingredient);
                 }
             }
@@ -207,8 +204,9 @@ public class StockFragment extends Fragment {
         if (query.isEmpty()) {
             filteredIngredients.addAll(categoryFiltered);
         } else {
+            String lowerCaseQuery = query.toLowerCase();
             for (BahanHariIni ingredient : categoryFiltered) {
-                if (ingredient.getNama().toLowerCase().contains(query.toLowerCase())) { //
+                if (ingredient.getNama().toLowerCase().contains(lowerCaseQuery)) {
                     filteredIngredients.add(ingredient);
                 }
             }
@@ -224,22 +222,21 @@ public class StockFragment extends Fragment {
         } else {
             updateEmptyView();
         }
-
         adapter.notifyDataSetChanged();
     }
 
     private void showDeleteConfirmationDialog(BahanHariIni bahan) {
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(requireContext())
                 .setTitle("Hapus Bahan")
-                .setMessage("Apakah Anda yakin ingin menghapus " + bahan.getNama() + "?") //
-                .setPositiveButton("Hapus", (dialog, which) -> deleteBahan(bahan.getId())) //
+                .setMessage("Apakah Anda yakin ingin menghapus " + bahan.getNama() + "?")
+                .setPositiveButton("Hapus", (dialog, which) -> deleteBahan(bahan.getId()))
                 .setNegativeButton("Batal", null)
                 .show();
     }
 
     private void deleteBahan(long bahanId) {
         new Thread(() -> {
-            dbHelper.hapusBahan(bahanId); //
+            dbHelper.hapusBahan(bahanId);
             if (getActivity() != null) {
                 getActivity().runOnUiThread(this::loadIngredients);
             }

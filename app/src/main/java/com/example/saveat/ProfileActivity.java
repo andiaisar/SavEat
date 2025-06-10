@@ -122,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Ingredients
         menuIngredients.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, StockActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, StockFragment.class);
             startActivity(intent);
             finish();
         });

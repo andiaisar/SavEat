@@ -47,28 +47,41 @@
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
                             android:src="@drawable/profileuser" />
-
                     </com.google.android.material.card.MaterialCardView>
 
-
-                    <com.google.android.material.card.MaterialCardView
+                    <RelativeLayout
                         android:id="@+id/cardNotification"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        app:cardCornerRadius="20dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="#FF6B6B"
-                        android:background="?attr/selectableItemBackgroundBorderless">
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageView
                             android:id="@+id/ivNotification"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/notification"
+                            app:tint="#424242"/>
+
+                        <TextView
+                            android:id="@+id/tvNotificationCount"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/notification" />
-                    </com.google.android.material.card.MaterialCardView>
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:background="@drawable/notification_badge_background"
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            tools:text="3"
+                            tools:visibility="visible" />
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -84,7 +97,7 @@
                             android:id="@+id/tvNamaUser"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hello, Franz Hermani!"
+                            android:text="Hello, User!"
                             android:textSize="22sp"
                             android:textStyle="bold"
                             android:textColor="#1A1A1A"
@@ -224,7 +237,6 @@
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:textColor="#1A1A1A"/>
-
             </LinearLayout>
 
             <RelativeLayout

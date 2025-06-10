@@ -31,9 +31,6 @@
             android:name=".IngredientDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".StockActivity"
-            android:exported="false" />
-        <activity
             android:name=".SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
