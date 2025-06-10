@@ -1,5 +1,3 @@
-Berikut adalah README yang dirancang secara profesional dan terstruktur untuk aplikasi SavEat:
-
 
 SavEat 🍽️
 
